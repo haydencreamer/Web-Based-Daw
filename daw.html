@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Web DAW Layout</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="daw-header">
+    <div class="brand">Web DAW</div>
+    <nav>
+      <a href="index.html">Menu</a>
+      <a href="#">Save</a>
+      <a href="#">Help</a>
+    </nav>
+  </header>
+
+  <section class="transport-panel">
+    <button id="play-button" class="transport-button">Play</button>
+    <button id="stop-button" class="transport-button">Stop</button>
+    <button id="record-button" class="transport-button">Record</button>
+    <label class="bpm-control">
+      BPM
+      <input id="bpm-input" type="number" min="40" max="240" step="1" value="120" />
+    </label>
+    <div class="transport-item">Time: <strong id="time-display">0:00</strong></div>
+  </section>
+
+  <main class="daw-layout">
+    <aside class="tracklist-panel">
+      <h2>Tracks</h2>
+      <div class="track-card">Track 1</div>
+      <div class="track-card">Track 2</div>
+      <div class="track-card">Track 3</div>
+      <button class="panel-button">Add Track</button>
+    </aside>
+
+    <section class="editor-panel">
+      <div class="panel-header">Arrangement</div>
+      <div class="panel-body editor-grid">
+        <div class="grid-labels">
+          <span>1</span><span>2</span><span>3</span><span>4</span>
+        </div>
+        <div class="grid-content">
+          <div class="track-grid">
+            <div class="track-row">
+              <div class="track-name">Track 1</div>
+              <div class="track-steps" data-track="1">
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+              </div>
+            </div>
+            <div class="track-row">
+              <div class="track-name">Track 2</div>
+              <div class="track-steps" data-track="2">
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+              </div>
+            </div>
+            <div class="track-row">
+              <div class="track-name">Track 3</div>
+              <div class="track-steps" data-track="3">
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="mixer-panel">
+      <h2>Mixer</h2>
+      <div class="mixer-channel">Channel 1</div>
+      <div class="mixer-channel">Channel 2</div>
+      <div class="mixer-channel">Channel 3</div>
+      <button class="panel-button">Open Mixer</button>
+    </aside>
+  </main>
+</body>
+</html>

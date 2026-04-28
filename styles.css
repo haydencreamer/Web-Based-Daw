@@ -1,0 +1,287 @@
+:root {
+  color-scheme: dark;
+  color: #f3f3f3;
+  background: #111316;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+a {
+  color: #f3f3f3;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  border-radius: 999px;
+  background: #5f8cff;
+  color: white;
+  cursor: pointer;
+  padding: 0.95rem 1.7rem;
+  font: inherit;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+  background: #7fa8ff;
+}
+
+.title-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, #0a0d12 0%, #1b2330 100%);
+}
+
+.title-card {
+  text-align: center;
+  max-width: 520px;
+  padding: 3rem 2.5rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 26px;
+  background: rgba(20, 27, 41, 0.95);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.title-card h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+}
+
+.title-card p {
+  margin: 0 0 2rem;
+  color: #adbac7;
+  font-size: 1.05rem;
+}
+
+.daw-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  background: #131820;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.daw-header .brand {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.daw-header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.transport-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #161d29;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.transport-item {
+  background: #1d2634;
+  padding: 0.9rem 1.2rem;
+  border-radius: 14px;
+  min-width: 90px;
+  text-align: center;
+}
+
+.transport-button,
+.bpm-control {
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #1d2634;
+  color: #f3f3f3;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 1rem;
+}
+
+.transport-button {
+  min-width: 90px;
+}
+
+.bpm-control input {
+  width: 70px;
+  border: none;
+  border-radius: 14px;
+  background: #10151f;
+  color: #f3f3f3;
+  text-align: center;
+  padding: 0.55rem 0.75rem;
+}
+
+.bpm-control input:focus {
+  outline: 2px solid #5f8cff;
+}
+
+.track-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.track-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.track-name {
+  font-weight: 700;
+}
+
+.track-steps {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.track-step {
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.track-step.active {
+  background: #5f8cff;
+  transform: scaleY(1.08);
+}
+
+.daw-layout {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr) 260px;
+  gap: 1rem;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.tracklist-panel,
+.mixer-panel,
+.editor-panel {
+  background: #131b27;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 24px;
+  padding: 1.3rem;
+}
+
+.tracklist-panel h2,
+.mixer-panel h2,
+.editor-panel .panel-header {
+  margin: 0 0 1rem;
+  color: #f3f3f3;
+}
+
+.track-card,
+.mixer-channel {
+  background: #171f2d;
+  border-radius: 18px;
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.track-card:last-child,
+.mixer-channel:last-child {
+  margin-bottom: 0;
+}
+
+.panel-button {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.editor-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 500px;
+}
+
+.panel-header {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.panel-body {
+  flex: 1;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 1rem;
+}
+
+.editor-grid {
+  background: #10151f;
+  border-radius: 22px;
+  padding: 1rem;
+  display: grid;
+  gap: 1rem;
+  min-height: 100%;
+}
+
+.grid-labels {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  color: #8a9cb5;
+}
+
+.grid-labels span {
+  background: rgba(255,255,255,0.04);
+  border-radius: 12px;
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.grid-content {
+  background: linear-gradient(180deg, rgba(143,177,255,0.04), rgba(255,255,255,0.02));
+  border: 1px dashed rgba(255,255,255,0.12);
+  border-radius: 22px;
+  min-height: 320px;
+  display: grid;
+  place-items: center;
+  color: #8899b0;
+  text-align: center;
+  padding: 2rem;
+}
+
+@media (max-width: 1100px) {
+  .daw-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .daw-header,
+  .transport-panel,
+  .daw-layout {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .daw-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .transport-panel {
+    justify-content: center;
+  }
+}
