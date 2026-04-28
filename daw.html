@@ -18,6 +18,7 @@
 
   <section class="transport-panel">
     <button id="play-button" class="transport-button">Play</button>
+    <button id="pause-button" class="transport-button">Pause</button>
     <button id="stop-button" class="transport-button">Stop</button>
     <button id="record-button" class="transport-button">Record</button>
     <label class="bpm-control">
@@ -30,10 +31,8 @@
   <main class="daw-layout">
     <aside class="tracklist-panel">
       <h2>Tracks</h2>
-      <div class="track-card">Track 1</div>
-      <div class="track-card">Track 2</div>
-      <div class="track-card">Track 3</div>
-      <button class="panel-button">Add Track</button>
+      <div id="track-list" class="track-list"></div>
+      <button id="add-track-button" class="panel-button">Add Track</button>
     </aside>
 
     <section class="editor-panel">
@@ -42,47 +41,59 @@
         <div class="grid-labels">
           <span>1</span><span>2</span><span>3</span><span>4</span>
         </div>
-        <div class="grid-content">
-          <div class="track-grid">
-            <div class="track-row">
-              <div class="track-name">Track 1</div>
-              <div class="track-steps" data-track="1">
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-              </div>
-            </div>
-            <div class="track-row">
-              <div class="track-name">Track 2</div>
-              <div class="track-steps" data-track="2">
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-              </div>
-            </div>
-            <div class="track-row">
-              <div class="track-name">Track 3</div>
-              <div class="track-steps" data-track="3">
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-                <div class="track-step"></div><div class="track-step"></div><div class="track-step"></div><div class="track-step"></div>
-              </div>
-            </div>
-          </div>
+        <div id="track-grid" class="grid-content">
+          <div class="empty-state">Add tracks and audio clips to begin.</div>
         </div>
       </div>
     </section>
 
     <aside class="mixer-panel">
-      <h2>Mixer</h2>
+      <div class="mixer-panel-header">
+        <h2>Mixer</h2>
+        <button id="instruments-button" class="panel-button small">Instruments</button>
+      </div>
       <div class="mixer-channel">Channel 1</div>
       <div class="mixer-channel">Channel 2</div>
       <div class="mixer-channel">Channel 3</div>
       <button class="panel-button">Open Mixer</button>
+      <button id="insert-file-button" class="panel-button">Insert Files</button>
+      <input id="file-input" type="file" accept="audio/*" multiple hidden />
+      <div id="drop-area" class="drop-area">Drag and drop audio files here</div>
+      <div class="audio-library" id="audio-library"></div>
     </aside>
   </main>
+
+  <div class="modal hidden" id="instrument-modal" role="dialog" aria-modal="true" aria-labelledby="instrument-modal-title">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="instrument-modal-title">Instrument Settings</h2>
+        <button id="instrument-close-button" class="modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="modal-field">
+        <label for="instrument-track-select">Track</label>
+        <select id="instrument-track-select"></select>
+      </div>
+      <div class="modal-field">
+        <label for="instrument-type">Instrument</label>
+        <select id="instrument-type">
+          <option value="Keyboard">Keyboard</option>
+          <option value="Drums">Drums</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label for="pitch-input">Pitch</label>
+        <input id="pitch-input" type="text" value="C4" />
+      </div>
+      <div class="modal-field">
+        <label for="range-input">Range</label>
+        <input id="range-input" type="text" value="2 octaves" />
+      </div>
+      <div class="modal-actions">
+        <button id="instrument-save-button" class="panel-button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
