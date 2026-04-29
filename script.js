@@ -14,7 +14,15 @@ const addTrackButton = document.getElementById('add-track-button');
 const instrumentsButton = document.getElementById('instruments-button');
 const insertFileButton = document.getElementById('insert-file-button');
 const fileInput = document.getElementById('file-input');
+const audioLibraryEl = document.getElementById('audio-library');
+const dropArea = document.getElementById('drop-area');
+const audioBrowserPanel = document.getElementById('audio-browser-panel');
+const browserResizer = document.getElementById('browser-resizer');
+const workspacePanel = document.getElementById('workspace-panel');
+const workspaceResizer = document.getElementById('workspace-resizer');
+const playlistResizer = document.getElementById('playlist-resizer');
 const timelineContainerEl = document.getElementById('timeline-container');
+const pianoRollContainer = document.getElementById('piano-roll-container');
 const mixerChannelsEl = document.getElementById('mixer-channels');
 const instrumentModal = document.getElementById('instrument-modal');
 const instrumentTrackSelect = document.getElementById('instrument-track-select');
@@ -139,6 +147,9 @@ function createTrack(name) {
     volume: 1.0,
     pan: 0,
     clips: [],
+    notes: [],
+    muted: false,
+    solo: false,
   };
   tracks.push(track);
   selectedTrackId = track.id;
@@ -296,43 +307,62 @@ function renderMixerChannels() {
     name.className = 'mixer-channel-name';
     name.textContent = track.name;
 
-    const volumeControl = document.createElement('div');
-    volumeControl.className = 'mixer-control';
+    const faderTrack = document.createElement('div');
+    faderTrack.className = 'fader-track';
 
-    const volumeLabel = document.createElement('label');
-    volumeLabel.textContent = 'Vol';
+    const faderThumb = document.createElement('div');
+    faderThumb.className = 'fader-thumb';
+    faderThumb.style.bottom = `${track.volume * 100}%`;
+    faderTrack.append(faderThumb);
 
-    const volumeSlider = document.createElement('input');
-    volumeSlider.type = 'range';
-    volumeSlider.min = '0';
-    volumeSlider.max = '1';
-    volumeSlider.step = '0.01';
-    volumeSlider.value = track.volume;
-    volumeSlider.addEventListener('input', (e) => {
-      track.volume = parseFloat(e.target.value);
+    const buttons = document.createElement('div');
+    buttons.className = 'mixer-button-row';
+
+    const muteButton = document.createElement('button');
+    muteButton.type = 'button';
+    muteButton.className = 'mixer-button';
+    muteButton.textContent = track.muted ? 'Unmute' : 'Mute';
+    muteButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      track.muted = !track.muted;
+      updateTrackUI();
     });
 
-    volumeControl.append(volumeLabel, volumeSlider);
-
-    const panControl = document.createElement('div');
-    panControl.className = 'mixer-control';
-
-    const panLabel = document.createElement('label');
-    panLabel.textContent = 'Pan';
-
-    const panSlider = document.createElement('input');
-    panSlider.type = 'range';
-    panSlider.min = '-1';
-    panSlider.max = '1';
-    panSlider.step = '0.01';
-    panSlider.value = track.pan;
-    panSlider.addEventListener('input', (e) => {
-      track.pan = parseFloat(e.target.value);
+    const soloButton = document.createElement('button');
+    soloButton.type = 'button';
+    soloButton.className = 'mixer-button';
+    soloButton.textContent = track.solo ? 'Unsolo' : 'Solo';
+    soloButton.addEventListener('click', (e) => {
+      e.stopPropagation();
+      track.solo = !track.solo;
+      updateTrackUI();
     });
 
-    panControl.append(panLabel, panSlider);
+    buttons.append(muteButton, soloButton);
 
-    channel.append(name, volumeControl, panControl);
+    faderThumb.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      const startY = event.clientY;
+      const startVolume = track.volume;
+
+      function onMouseMove(moveEvent) {
+        const delta = startY - moveEvent.clientY;
+        const newVolume = Math.min(1, Math.max(0, startVolume + delta / 120));
+        track.volume = newVolume;
+        faderThumb.style.bottom = `${newVolume * 100}%`;
+      }
+
+      function onMouseUp() {
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+        updateTrackUI();
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+    channel.append(name, faderTrack, buttons);
     channel.addEventListener('click', () => selectTrack(track.id));
     mixerChannelsEl.append(channel);
   });
@@ -341,6 +371,7 @@ function renderMixerChannels() {
 function updateTrackUI() {
   renderTimeline();
   renderMixerChannels();
+  renderPianoRoll();
   updateInstrumentTrackOptions();
   updateAudioLibraryUI();
 }
@@ -452,6 +483,60 @@ function renderTimeline() {
   });
 }
 
+function renderPianoRoll() {
+  if (!pianoRollContainer) return;
+  pianoRollContainer.innerHTML = '';
+  const track = tracks.find((item) => item.id === selectedTrackId);
+  if (!track) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'Select a track to edit the piano roll.';
+    pianoRollContainer.append(empty);
+    return;
+  }
+
+  const notes = [
+    'C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3', 'B2', 'A2', 'G2', 'F2'
+  ];
+  const grid = document.createElement('div');
+  grid.className = 'piano-roll-grid';
+  grid.style.gridTemplateRows = `repeat(${notes.length}, 32px)`;
+
+  for (let row = 0; row < notes.length; row += 1) {
+    for (let col = 0; col < 16; col += 1) {
+      const cell = document.createElement('div');
+      cell.className = 'piano-roll-cell';
+      cell.dataset.note = notes[row];
+      cell.dataset.step = col;
+      const hasNote = track.notes.some(note => note.step === col && note.note === notes[row]);
+      if (hasNote) cell.classList.add('active');
+      cell.addEventListener('click', () => {
+        const noteIndex = track.notes.findIndex(note => note.step === col && note.note === notes[row]);
+        if (noteIndex >= 0) {
+          track.notes.splice(noteIndex, 1);
+        } else {
+          track.notes.push({ step: col, note: notes[row], duration: 1 });
+        }
+        renderPianoRoll();
+      });
+      grid.append(cell);
+    }
+  }
+
+  pianoRollContainer.append(grid);
+
+  track.notes.forEach((note) => {
+    const noteEl = document.createElement('div');
+    noteEl.className = 'piano-roll-note';
+    noteEl.textContent = note.note;
+    noteEl.style.left = `${(note.step / 16) * 100}%`;
+    const rowIndex = notes.indexOf(note.note);
+    noteEl.style.top = `${(rowIndex / notes.length) * 100}%`;
+    noteEl.style.width = `${(note.duration / 16) * 100}%`;
+    pianoRollContainer.append(noteEl);
+  });
+}
+
 function placeClipOnTrack(trackId, fileId, startStep) {
   const track = tracks.find(t => t.id === trackId);
   if (!track) return;
@@ -513,6 +598,84 @@ function updateAudioLibraryUI() {
     item.append(title, controls);
     audioLibraryEl.append(item);
   });
+}
+
+function initResizablePanels() {
+  if (browserResizer && audioBrowserPanel && workspacePanel) {
+    let dragging = false;
+    browserResizer.addEventListener('mousedown', (event) => {
+      dragging = true;
+      document.body.style.cursor = 'ew-resize';
+      const startX = event.clientX;
+      const startWidth = audioBrowserPanel.offsetWidth;
+
+      function onMouseMove(moveEvent) {
+        const delta = moveEvent.clientX - startX;
+        audioBrowserPanel.style.width = `${Math.max(240, startWidth + delta)}px`;
+      }
+
+      function onMouseUp() {
+        dragging = false;
+        document.body.style.cursor = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
+  if (workspaceResizer && workspacePanel && document.getElementById('mixer-panel')) {
+    const mixerPanel = document.getElementById('mixer-panel');
+    workspaceResizer.addEventListener('mousedown', (event) => {
+      document.body.style.cursor = 'ew-resize';
+      const startX = event.clientX;
+      const startWidth = workspacePanel.offsetWidth;
+      const startMixWidth = mixerPanel.offsetWidth;
+
+      function onMouseMove(moveEvent) {
+        const delta = moveEvent.clientX - startX;
+        workspacePanel.style.width = `${Math.max(440, startWidth + delta)}px`;
+        mixerPanel.style.width = `${Math.max(280, startMixWidth - delta)}px`;
+      }
+
+      function onMouseUp() {
+        document.body.style.cursor = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
+  if (playlistResizer && document.getElementById('playlist-panel') && document.getElementById('piano-roll-panel')) {
+    const playlistPanel = document.getElementById('playlist-panel');
+    const pianoRollPanelEl = document.getElementById('piano-roll-panel');
+    playlistResizer.addEventListener('mousedown', (event) => {
+      document.body.style.cursor = 'ns-resize';
+      const startY = event.clientY;
+      const startPlaylistHeight = playlistPanel.offsetHeight;
+      const startPianoHeight = pianoRollPanelEl.offsetHeight;
+
+      function onMouseMove(moveEvent) {
+        const delta = moveEvent.clientY - startY;
+        playlistPanel.style.height = `${Math.max(240, startPlaylistHeight + delta)}px`;
+        pianoRollPanelEl.style.height = `${Math.max(180, startPianoHeight - delta)}px`;
+      }
+
+      function onMouseUp() {
+        document.body.style.cursor = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+  }
 }
 
 function getUniqueAudioId() {
@@ -624,7 +787,6 @@ function startPlayback() {
   if (isPlaying) return;
   isPlaying = true;
   lastTickTime = performance.now();
-  playAllClips();
   highlightStep(currentStep);
   window.requestAnimationFrame(handlePlayback);
 }
@@ -847,6 +1009,7 @@ if (instrumentSaveButton) {
   instrumentSaveButton.addEventListener('click', saveInstrumentSettings);
 }
 
+initResizablePanels();
 loadDefaultSamples();
 createTrack('Track 1');
 createTrack('Track 2');

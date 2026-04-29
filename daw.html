@@ -29,34 +29,65 @@
   </section>
 
   <main class="daw-layout">
-    <aside class="mixer-panel">
-      <div class="mixer-panel-header">
-        <h2>Mixer</h2>
-        <button id="instruments-button" class="panel-button small">Instruments</button>
+    <aside class="audio-browser-panel resizable-panel" id="audio-browser-panel">
+      <div class="panel-header browser-header">
+        <div>
+          <h2>Audio Browser</h2>
+          <p>Drag files to the playlist</p>
+        </div>
       </div>
-      <div id="mixer-channels" class="mixer-channels">
-        <!-- Channels will be rendered here -->
+      <div class="panel-body browser-body">
+        <button id="insert-file-button" class="panel-button">Insert Files</button>
+        <input id="file-input" type="file" accept="audio/*" multiple hidden />
+        <div id="drop-area" class="drop-area">Drag and drop audio files here</div>
+        <div class="audio-library" id="audio-library"></div>
       </div>
     </aside>
 
-    <section class="editor-panel">
-      <div class="panel-header">
-        Arrangement
-        <button id="add-track-button" class="panel-button small">Add Track</button>
-      </div>
-      <div class="panel-body editor-timeline">
-        <div id="timeline-container" class="timeline-container">
-          <!-- Timeline will be rendered here -->
+    <div id="browser-resizer" class="splitter splitter-vertical"></div>
+
+    <div class="workspace-panel" id="workspace-panel">
+      <section class="playlist-panel resizable-panel" id="playlist-panel">
+        <div class="panel-header playlist-header">
+          <div>
+            <h2>Playlist</h2>
+            <p>Arrange your clips</p>
+          </div>
+          <button id="add-track-button" class="panel-button small">Add Track</button>
+        </div>
+        <div class="panel-body playlist-body">
+          <div id="timeline-container" class="timeline-container"></div>
+        </div>
+      </section>
+
+      <div id="playlist-resizer" class="splitter splitter-horizontal"></div>
+
+      <section class="piano-roll-panel resizable-panel" id="piano-roll-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Piano Roll</h2>
+            <p>Click to add notes</p>
+          </div>
+          <button id="instruments-button" class="panel-button small">Instruments</button>
+        </div>
+        <div class="panel-body piano-roll-body">
+          <div id="piano-roll-container" class="piano-roll-container"></div>
+        </div>
+      </section>
+    </div>
+
+    <div id="workspace-resizer" class="splitter splitter-vertical"></div>
+
+    <aside class="mixer-panel resizable-panel" id="mixer-panel">
+      <div class="panel-header mixer-header">
+        <div>
+          <h2>Mixer</h2>
+          <p>Interactive channel strips</p>
         </div>
       </div>
-    </section>
-
-    <aside class="audio-library-panel">
-      <h2>Audio Library</h2>
-      <button id="insert-file-button" class="panel-button">Insert Files</button>
-      <input id="file-input" type="file" accept="audio/*" multiple hidden />
-      <div id="drop-area" class="drop-area">Drag and drop audio files here</div>
-      <div class="audio-library" id="audio-library"></div>
+      <div class="panel-body mixer-body">
+        <div id="mixer-channels" class="mixer-channels"></div>
+      </div>
     </aside>
   </main>
 
