@@ -1,10 +1,15 @@
 :root {
   color-scheme: dark;
-  color: #f5f0c7;
-  background: #071003;
-  font-family: Inter, system-ui, sans-serif;
+  color: #ffffff;
+  background: #1a2332;
+  font-family: 'Segoe UI', system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.5;
+  --primary-accent: #8b5cf6;
+  --secondary-accent: #a78bfa;
+  --bg-dark: #11172a;
+  --bg-panel: #1a2332;
+  --bg-light: #2a3449;
 }
 
 * {
@@ -14,12 +19,11 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: radial-gradient(circle at top left, rgba(141, 187, 31, 0.16), transparent 28%),
-    linear-gradient(180deg, #0b1307 0%, #071003 55%, #050902 100%);
+  background: linear-gradient(180deg, #1a2332 0%, #141b2a 50%, #0f1620 100%);
 }
 
 a {
-  color: #f5f0c7;
+  color: #ffffff;
   text-decoration: none;
 }
 
@@ -32,17 +36,18 @@ select {
 button {
   border: none;
   border-radius: 12px;
-  background: #9dbd25;
-  color: #061002;
+  background: #8b5cf6;
+  color: #ffffff;
   cursor: pointer;
   padding: 0.9rem 1.3rem;
   transition: transform 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.15);
 }
 
 button:hover {
   transform: translateY(-1px);
-  background: #c7dd52;
-  box-shadow: 0 10px 25px rgba(157, 189, 37, 0.18);
+  background: #a78bfa;
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.3);
 }
 
 button:active {
@@ -54,17 +59,17 @@ button:active {
   display: grid;
   place-items: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #061003 0%, #091505 100%);
+  background: linear-gradient(135deg, #1a2332 0%, #0f1620 100%);
 }
 
 .title-card {
   text-align: center;
   max-width: 520px;
   padding: 3rem 2.5rem;
-  border: 1px solid rgba(157, 189, 37, 0.16);
+  border: 1px solid rgba(139, 92, 246, 0.16);
   border-radius: 16px;
-  background: rgba(15, 24, 10, 0.96);
-  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.45);
+  background: rgba(26, 35, 50, 0.96);
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.6), 0 0 40px rgba(139, 92, 246, 0.1);
 }
 
 .title-card h1 {
@@ -74,7 +79,7 @@ button:active {
 
 .title-card p {
   margin: 0 0 2rem;
-  color: #cbd18d;
+  color: #c4b5fd;
   font-size: 1.05rem;
 }
 
@@ -84,8 +89,9 @@ button:active {
   align-items: center;
   gap: 1rem;
   padding: 1rem 2rem;
-  background: rgba(8, 18, 6, 0.96);
-  border-bottom: 1px solid rgba(157, 189, 37, 0.16);
+  background: rgba(17, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.16);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .daw-header .brand {
@@ -106,29 +112,32 @@ button:active {
   gap: 0.75rem;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(8, 18, 6, 0.96);
-  border-bottom: 1px solid rgba(157, 189, 37, 0.16);
+  background: rgba(17, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.16);
+  box-shadow: 0 2px 10px rgba(139, 92, 246, 0.05);
 }
 
 .transport-item {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(139, 92, 246, 0.08);
   padding: 0.85rem 1.2rem;
   border-radius: 14px;
   min-width: 90px;
   text-align: center;
-  color: #e6e4b7;
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
 .transport-button,
 .bpm-control {
-  border: 1px solid rgba(157, 189, 37, 0.28);
-  background: #18220b;
-  color: #f5f0c7;
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  background: #1a2332;
+  color: #ffffff;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
   gap: 0.75rem;
   padding: 0.8rem 1rem;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.1);
 }
 
 .transport-button {
@@ -142,16 +151,16 @@ button:active {
 
 .bpm-control input {
   width: 72px;
-  border: 1px solid rgba(157, 189, 37, 0.18);
+  border: 1px solid rgba(139, 92, 246, 0.18);
   border-radius: 10px;
-  background: #0f1308;
-  color: #f5f0c7;
+  background: #11172a;
+  color: #ffffff;
   text-align: center;
   padding: 0.55rem 0.75rem;
 }
 
 .bpm-control input:focus {
-  outline: 1px solid #9dbd25;
+  outline: 1px solid #8b5cf6;
 }
 
 .track-grid {
@@ -165,7 +174,7 @@ button:active {
 }
 
 .track-card {
-  background: #101a09;
+  background: #1a2332;
   border-radius: 12px;
   padding: 0.9rem 1rem;
   display: flex;
@@ -173,17 +182,20 @@ button:active {
   align-items: center;
   gap: 1rem;
   cursor: pointer;
-  border: 1px solid rgba(157, 189, 37, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.12);
   transition: background 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .track-card:hover {
-  background: #17270d;
+  background: #2a3449;
+  border-color: rgba(139, 92, 246, 0.24);
 }
 
 .track-card.selected {
-  border-color: #c7dd52;
-  background: #1c2d11;
+  border-color: #8b5cf6;
+  background: #2a3449;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
 }
 
 .track-card-actions {
@@ -195,14 +207,21 @@ button:active {
 .track-remove-btn {
   width: 30px;
   height: 30px;
-  border: 1px solid rgba(157, 189, 37, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f0c7;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.08);
+  color: #ffffff;
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.track-rename-btn:hover,
+.track-remove-btn:hover {
+  background: rgba(139, 92, 246, 0.16);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
 }
 
 .track-rename-btn {
@@ -230,7 +249,7 @@ button:active {
 
 .track-meta {
   font-size: 0.92rem;
-  color: #b7c179;
+  color: #a78bfa;
 }
 
 .track-controls {
@@ -246,18 +265,19 @@ button:active {
 }
 
 .track-row {
-  background: #101b0a;
+  background: #1a2332;
   border-radius: 14px;
   padding: 1rem;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  border: 1px solid rgba(157, 189, 37, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .track-row.selected {
-  border-color: #c7dd52;
-  box-shadow: 0 0 0 1px rgba(199, 221, 82, 0.15);
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
 }
 
 .track-steps {
@@ -269,37 +289,40 @@ button:active {
 .track-step {
   height: 30px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(139, 92, 246, 0.08);
   transition: background-color 0.15s ease, transform 0.15s ease;
+  border: 1px solid rgba(139, 92, 246, 0.12);
 }
 
 .track-step.active {
-  background: #c7dd52;
+  background: #8b5cf6;
   transform: scaleY(1.05);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .track-step.current {
-  box-shadow: 0 0 10px rgba(199, 221, 82, 0.5);
+  box-shadow: 0 0 10px rgba(139, 92, 246, 0.6);
 }
 
 .track-clip-label {
-  color: #d8dfa4;
+  color: #c4b5fd;
   font-size: 0.92rem;
 }
 
 .drop-area {
-  background: #0b1406;
-  border: 1px dashed rgba(157, 189, 37, 0.45);
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px dashed rgba(139, 92, 246, 0.45);
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
-  color: #b7c179;
+  color: #a78bfa;
   cursor: pointer;
 }
 
 .drop-area.dragover {
-  background: #11200c;
-  border-color: #c7dd52;
+  background: rgba(139, 92, 246, 0.15);
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
 }
 
 .audio-library {
@@ -315,15 +338,18 @@ button:active {
   justify-content: space-between;
   align-items: center;
   padding: 0.95rem 1rem;
-  background: #111a0b;
-  border: 1px solid rgba(157, 189, 37, 0.12);
+  background: #1a2332;
+  border: 1px solid rgba(139, 92, 246, 0.12);
   border-radius: 12px;
   cursor: pointer;
-  transition: background 0.15s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .audio-file-item:hover {
-  background: #17230d;
+  background: #2a3449;
+  border-color: rgba(139, 92, 246, 0.24);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
 }
 
 .audio-file-controls {
@@ -334,22 +360,24 @@ button:active {
 .sample-play-btn {
   width: 34px;
   height: 34px;
-  border: 1px solid rgba(157, 189, 37, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f0c7;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.08);
+  color: #ffffff;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .sample-play-btn:hover {
-  background: rgba(199, 221, 82, 0.18);
+  background: rgba(139, 92, 246, 0.18);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
 }
 
 .empty-state {
-  color: #8da46a;
+  color: #a78bfa;
   text-align: center;
   padding: 1.5rem 1rem;
 }
@@ -371,10 +399,11 @@ button:active {
 .modal-content {
   width: 100%;
   max-width: 800px;
-  background: #101b09;
+  background: #1a2332;
   border-radius: 16px;
-  border: 1px solid rgba(157, 189, 37, 0.18);
+  border: 1px solid rgba(139, 92, 246, 0.18);
   padding: 1.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4), 0 0 40px rgba(139, 92, 246, 0.1);
 }
 
 .modal-header {
@@ -384,15 +413,20 @@ button:active {
   margin-bottom: 1rem;
 }
 
+.modal-header h2 {
+  color: #ffffff;
+}
+
 .modal-close {
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: #f5f0c7;
+  background: rgba(139, 92, 246, 0.08);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  color: #ffffff;
   font-size: 1.4rem;
   width: 38px;
   height: 38px;
   border-radius: 12px;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
 .modal-field {
@@ -403,17 +437,17 @@ button:active {
 }
 
 .modal-field label {
-  color: #c7dd52;
+  color: #a78bfa;
   font-size: 0.9rem;
 }
 
 .modal-field input,
 .modal-field select {
-  background: #0f1806;
-  border: 1px solid rgba(157, 189, 37, 0.16);
+  background: #11172a;
+  border: 1px solid rgba(139, 92, 246, 0.16);
   border-radius: 12px;
   padding: 0.85rem 1rem;
-  color: #f5f0c7;
+  color: #ffffff;
 }
 
 .modal-actions {
@@ -435,12 +469,13 @@ button:active {
 .mixer-panel,
 .playlist-panel,
 .piano-roll-panel {
-  background: rgba(9, 16, 6, 0.96);
-  border: 1px solid rgba(157, 189, 37, 0.15);
+  background: rgba(26, 35, 50, 0.96);
+  border: 1px solid rgba(139, 92, 246, 0.15);
   border-radius: 18px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3), 0 0 20px rgba(139, 92, 246, 0.05);
 }
 
 .browser-header,
@@ -452,8 +487,9 @@ button:active {
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.2rem;
-  background: rgba(12, 20, 7, 0.92);
-  border-bottom: 1px solid rgba(157, 189, 37, 0.18);
+  background: rgba(17, 23, 42, 0.92);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.18);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.05);
 }
 
 .browser-header h2,
@@ -461,7 +497,7 @@ button:active {
 .mixer-header h2,
 .panel-header h2 {
   margin: 0;
-  color: #f5f0c7;
+  color: #ffffff;
 }
 
 .browser-header p,
@@ -469,7 +505,7 @@ button:active {
 .mixer-header p,
 .panel-header p {
   margin: 0;
-  color: #b7c179;
+  color: #a78bfa;
   font-size: 0.95rem;
 }
 
@@ -494,8 +530,9 @@ button:active {
 }
 
 .splitter {
-  background: rgba(157, 189, 37, 0.18);
+  background: rgba(139, 92, 246, 0.18);
   z-index: 2;
+  box-shadow: inset 0 0 10px rgba(139, 92, 246, 0.1);
 }
 
 .splitter-vertical {
@@ -541,18 +578,21 @@ button:active {
   gap: 0.75rem;
   padding: 0.65rem 0.5rem;
   border-radius: 12px;
-  background: rgba(15, 24, 10, 0.88);
-  border: 1px solid rgba(157, 189, 37, 0.12);
+  background: rgba(26, 35, 50, 0.88);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .timeline-track-row.selected {
-  border-color: #c7dd52;
+  border-color: #8b5cf6;
+  background: rgba(26, 35, 50, 0.95);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
 }
 
 .timeline-track-name {
   width: 110px;
   min-width: 110px;
-  color: #f5f0c7;
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
 }
@@ -560,35 +600,42 @@ button:active {
 .timeline-track-lane {
   flex: 1;
   min-height: 48px;
-  background: #0b1406;
+  background: #11172a;
   border-radius: 10px;
   position: relative;
-  border: 1px solid rgba(157, 189, 37, 0.14);
+  border: 1px solid rgba(139, 92, 246, 0.14);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .timeline-clip {
   position: absolute;
   top: 4px;
   height: 40px;
-  background: linear-gradient(135deg, #9dbd25, #c7dd52);
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 0.75rem;
   font-size: 0.8rem;
-  color: #061002;
+  color: #ffffff;
   cursor: grab;
   overflow: hidden;
   z-index: 5;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .clip-resize-handle {
   width: 10px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.28);
+  background: rgba(255, 255, 255, 0.4);
   cursor: ew-resize;
   border-radius: 0 8px 8px 0;
+  transition: background 0.15s ease;
+}
+
+.clip-resize-handle:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .playhead {
@@ -602,11 +649,12 @@ button:active {
 
 .piano-roll-container {
   min-height: 220px;
-  background: #0b1406;
+  background: #11172a;
   border-radius: 14px;
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(157, 189, 37, 0.14);
+  border: 1px solid rgba(139, 92, 246, 0.14);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .piano-roll-grid {
@@ -616,26 +664,28 @@ button:active {
 }
 
 .piano-roll-cell {
-  border-bottom: 1px solid rgba(157, 189, 37, 0.12);
-  border-right: 1px solid rgba(157, 189, 37, 0.08);
-  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.12);
+  border-right: 1px solid rgba(139, 92, 246, 0.08);
+  background: rgba(139, 92, 246, 0.04);
 }
 
 .piano-roll-cell:nth-child(16n + 1) {
-  border-left: 1px solid rgba(157, 189, 37, 0.12);
+  border-left: 1px solid rgba(139, 92, 246, 0.12);
 }
 
 .piano-roll-cell.active {
-  background: rgba(157, 189, 37, 0.22);
+  background: rgba(139, 92, 246, 0.22);
+  box-shadow: inset 0 0 6px rgba(139, 92, 246, 0.2);
 }
 
 .piano-roll-note {
   position: absolute;
-  background: rgba(157, 189, 37, 0.9);
+  background: rgba(139, 92, 246, 0.9);
   border-radius: 6px;
-  color: #061002;
+  color: #ffffff;
   padding: 0.25rem 0.5rem;
   font-size: 0.75rem;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
 }
 
 .mixer-body {
@@ -645,7 +695,7 @@ button:active {
 }
 
 .mixer-channel {
-  background: #101a09;
+  background: #1a2332;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -653,15 +703,17 @@ button:active {
   justify-content: space-between;
   padding: 1rem;
   min-height: 220px;
-  border: 1px solid rgba(157, 189, 37, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .mixer-channel.selected {
-  border-color: #c7dd52;
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
 }
 
 .mixer-channel-name {
-  color: #f5f0c7;
+  color: #ffffff;
   font-weight: 700;
   margin-bottom: 1rem;
 }
@@ -669,20 +721,28 @@ button:active {
 .fader-track {
   width: 12px;
   height: 120px;
-  background: #152410;
+  background: rgba(139, 92, 246, 0.1);
   border-radius: 12px;
   position: relative;
   margin: 0 auto 1rem;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .fader-thumb {
   width: 100%;
   height: 18px;
-  background: #c7dd52;
+  background: linear-gradient(180deg, #8b5cf6, #a78bfa);
   border-radius: 10px;
   position: absolute;
   bottom: 0;
   cursor: pointer;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  transition: box-shadow 0.15s ease;
+}
+
+.fader-thumb:hover {
+  box-shadow: 0 6px 16px rgba(139, 92, 246, 0.5);
 }
 
 .mixer-button-row {
@@ -696,8 +756,22 @@ button:active {
   flex: 1;
   border-radius: 999px;
   padding: 0.5rem 0;
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f0c7;
+  background: rgba(139, 92, 246, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.mixer-button:hover {
+  background: rgba(139, 92, 246, 0.15);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+}
+
+.time-marker {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #a78bfa;
 }
 
 @media (max-width: 1100px) {
@@ -711,37 +785,39 @@ button:active {
 }
 
 .editor-grid {
-  background: #0f1607;
+  background: #1a2332;
   border-radius: 16px;
   padding: 1rem;
   display: grid;
   gap: 1rem;
   min-height: 100%;
-  border: 1px solid rgba(157, 189, 37, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .grid-labels {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
-  color: #abb276;
+  color: #a78bfa;
 }
 
 .grid-labels span {
-  background: rgba(157, 189, 37, 0.08);
+  background: rgba(139, 92, 246, 0.08);
   border-radius: 10px;
   padding: 0.75rem;
   text-align: center;
+  border: 1px solid rgba(139, 92, 246, 0.1);
 }
 
 .grid-content {
-  background: linear-gradient(180deg, rgba(164, 190, 43, 0.05), rgba(255,255,255,0.03));
-  border: 1px dashed rgba(157, 189, 37, 0.12);
+  background: linear-gradient(180deg, rgba(139, 92, 246, 0.05), rgba(139, 92, 246, 0.02));
+  border: 1px dashed rgba(139, 92, 246, 0.12);
   border-radius: 16px;
   min-height: 320px;
   display: grid;
   place-items: center;
-  color: #b6c67c;
+  color: #a78bfa;
   text-align: center;
   padding: 1.75rem;
 }
@@ -762,10 +838,12 @@ button:active {
   display: flex;
   position: relative;
   height: 120px;
-  background: #1a2412;
+  background: #11172a;
   border-radius: 8px;
   padding: 10px;
   overflow: hidden;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .key {
@@ -784,29 +862,34 @@ button:active {
 .key.white {
   width: 30px;
   height: 100px;
-  background: #f5f0c7;
-  border: 1px solid #071003;
+  background: #e8e4f3;
+  border: 1px solid #11172a;
   border-radius: 0 0 4px 4px;
   z-index: 1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .key.white.active {
-  background: #c7dd52;
+  background: #a78bfa;
+  box-shadow: 0 4px 8px rgba(139, 92, 246, 0.4);
 }
 
 .key.black {
   width: 20px;
   height: 60px;
-  background: #071003;
-  color: #f5f0c7;
+  background: #11172a;
+  color: #e8e4f3;
   margin-left: -10px;
   margin-right: -10px;
   z-index: 2;
   border-radius: 0 0 2px 2px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .key.black.active {
-  background: #9dbd25;
+  background: #8b5cf6;
+  box-shadow: 0 4px 10px rgba(139, 92, 246, 0.5);
 }
 
 .timeline-container {
@@ -818,7 +901,7 @@ button:active {
   display: grid;
   grid-template-columns: repeat(16, 1fr);
   gap: 0;
-  border-bottom: 1px solid rgba(157, 189, 37, 0.3);
+  border-bottom: 1px solid rgba(139, 92, 246, 0.3);
   padding-bottom: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -826,7 +909,7 @@ button:active {
 .time-marker {
   text-align: center;
   font-size: 0.8rem;
-  color: #cbd18d;
+  color: #a78bfa;
 }
 
 .timeline-track-row {
@@ -838,7 +921,7 @@ button:active {
 }
 
 .timeline-track-row.selected {
-  background: rgba(157, 189, 37, 0.1);
+  background: rgba(139, 92, 246, 0.1);
 }
 
 .timeline-track-name {
@@ -851,25 +934,27 @@ button:active {
 .timeline-track-lane {
   flex: 1;
   height: 40px;
-  background: #1a2412;
+  background: #11172a;
   border-radius: 4px;
   position: relative;
-  border: 1px solid rgba(157, 189, 37, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .timeline-clip {
   position: absolute;
   top: 2px;
   height: 36px;
-  background: #9dbd25;
+  background: linear-gradient(135deg, #8b5cf6, #a78bfa);
   border-radius: 4px;
   display: flex;
   align-items: center;
   padding: 0 0.5rem;
   font-size: 0.8rem;
-  color: #061002;
+  color: #ffffff;
   cursor: pointer;
   overflow: hidden;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.3);
 }
 
 .clip-resize-handle {
@@ -878,9 +963,14 @@ button:active {
   top: 0;
   width: 8px;
   height: 100%;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   cursor: ew-resize;
   border-radius: 0 4px 4px 0;
+  transition: background 0.15s ease;
+}
+
+.clip-resize-handle:hover {
+  background: rgba(255, 255, 255, 0.6);
 }
 
 .playhead {
@@ -888,13 +978,18 @@ button:active {
   top: 0;
   width: 2px;
   height: 100%;
-  background: #f5f0c7;
+  background: #a78bfa;
   z-index: 10;
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
 }
 
 @media (max-width: 1100px) {
   .daw-layout {
     grid-template-columns: 1fr;
+  }
+
+  .splitter {
+    display: none;
   }
 }
 
