@@ -278,6 +278,10 @@ button:active {
   transform: scaleY(1.05);
 }
 
+.track-step.current {
+  box-shadow: 0 0 10px rgba(199, 221, 82, 0.5);
+}
+
 .track-clip-label {
   color: #d8dfa4;
   font-size: 0.92rem;
@@ -366,7 +370,7 @@ button:active {
 
 .modal-content {
   width: 100%;
-  max-width: 460px;
+  max-width: 800px;
   background: #101b09;
   border-radius: 16px;
   border: 1px solid rgba(157, 189, 37, 0.18);
@@ -427,6 +431,7 @@ button:active {
 
 .tracklist-panel,
 .mixer-panel,
+.audio-library-panel,
 .editor-panel {
   background: rgba(9, 16, 6, 0.96);
   border: 1px solid rgba(157, 189, 37, 0.15);
@@ -450,6 +455,51 @@ button:active {
   border-radius: 12px;
   padding: 0.85rem 1rem;
   margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mixer-channel-name {
+  font-weight: 600;
+  text-align: center;
+}
+
+.mixer-control {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.mixer-control label {
+  font-size: 0.8rem;
+  color: #cbd18d;
+}
+
+.mixer-control input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #1a2412;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+.mixer-control input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #9dbd25;
+  cursor: pointer;
+}
+
+.mixer-channels {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .track-card:last-child,
@@ -520,6 +570,144 @@ button:active {
   align-items: center;
   gap: 1rem;
   margin-bottom: 0;
+}
+
+.keyboard-container {
+  margin-top: 1rem;
+}
+
+.keyboard {
+  display: flex;
+  position: relative;
+  height: 120px;
+  background: #1a2412;
+  border-radius: 8px;
+  padding: 10px;
+  overflow: hidden;
+}
+
+.key {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #071003;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  user-select: none;
+}
+
+.key.white {
+  width: 30px;
+  height: 100px;
+  background: #f5f0c7;
+  border: 1px solid #071003;
+  border-radius: 0 0 4px 4px;
+  z-index: 1;
+}
+
+.key.white.active {
+  background: #c7dd52;
+}
+
+.key.black {
+  width: 20px;
+  height: 60px;
+  background: #071003;
+  color: #f5f0c7;
+  margin-left: -10px;
+  margin-right: -10px;
+  z-index: 2;
+  border-radius: 0 0 2px 2px;
+}
+
+.key.black.active {
+  background: #9dbd25;
+}
+
+.timeline-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.timeline-header {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+  gap: 0;
+  border-bottom: 1px solid rgba(157, 189, 37, 0.3);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.time-marker {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #cbd18d;
+}
+
+.timeline-track-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.timeline-track-row.selected {
+  background: rgba(157, 189, 37, 0.1);
+}
+
+.timeline-track-name {
+  width: 120px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.5rem;
+}
+
+.timeline-track-lane {
+  flex: 1;
+  height: 40px;
+  background: #1a2412;
+  border-radius: 4px;
+  position: relative;
+  border: 1px solid rgba(157, 189, 37, 0.2);
+}
+
+.timeline-clip {
+  position: absolute;
+  top: 2px;
+  height: 36px;
+  background: #9dbd25;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+  font-size: 0.8rem;
+  color: #061002;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.clip-resize-handle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 8px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: ew-resize;
+  border-radius: 0 4px 4px 0;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: #f5f0c7;
+  z-index: 10;
 }
 
 @media (max-width: 1100px) {

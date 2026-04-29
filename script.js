@@ -14,10 +14,8 @@ const addTrackButton = document.getElementById('add-track-button');
 const instrumentsButton = document.getElementById('instruments-button');
 const insertFileButton = document.getElementById('insert-file-button');
 const fileInput = document.getElementById('file-input');
-const trackListEl = document.getElementById('track-list');
-const trackGridEl = document.getElementById('track-grid');
-const dropArea = document.getElementById('drop-area');
-const audioLibraryEl = document.getElementById('audio-library');
+const timelineContainerEl = document.getElementById('timeline-container');
+const mixerChannelsEl = document.getElementById('mixer-channels');
 const instrumentModal = document.getElementById('instrument-modal');
 const instrumentTrackSelect = document.getElementById('instrument-track-select');
 const instrumentTypeSelect = document.getElementById('instrument-type');
@@ -25,6 +23,7 @@ const pitchInput = document.getElementById('pitch-input');
 const rangeInput = document.getElementById('range-input');
 const instrumentSaveButton = document.getElementById('instrument-save-button');
 const instrumentCloseButton = document.getElementById('instrument-close-button');
+const keyboardContainerEl = document.getElementById('keyboard-container');
 
 let tempo = 120;
 let isPlaying = false;
@@ -62,17 +61,71 @@ function updateTimeDisplay() {
 }
 
 function highlightStep(stepIndex) {
-  document.querySelectorAll('.track-step').forEach((stepEl, index) => {
-    const trackStepIndex = index % 16;
-    stepEl.classList.toggle('active', trackStepIndex === stepIndex);
+  // Remove previous playhead
+  document.querySelectorAll('.playhead').forEach(ph => ph.remove());
+
+  // Add new playhead
+  const lanes = document.querySelectorAll('.timeline-track-lane');
+  lanes.forEach(lane => {
+    const playhead = document.createElement('div');
+    playhead.className = 'playhead';
+    playhead.style.left = `${(stepIndex / 16) * 100}%`;
+    lane.append(playhead);
   });
 }
 
-function updateTrackUI() {
-  renderTrackList();
-  renderTrackGrid();
-  updateInstrumentTrackOptions();
-  updateAudioLibraryUI();
+function renderMixerChannels() {
+  if (!mixerChannelsEl) return;
+  mixerChannelsEl.innerHTML = '';
+  tracks.forEach(track => {
+    const channel = document.createElement('div');
+    channel.className = `mixer-channel${track.id === selectedTrackId ? ' selected' : ''}`;
+    channel.dataset.trackId = track.id;
+
+    const name = document.createElement('div');
+    name.className = 'mixer-channel-name';
+    name.textContent = track.name;
+
+    const volumeControl = document.createElement('div');
+    volumeControl.className = 'mixer-control';
+
+    const volumeLabel = document.createElement('label');
+    volumeLabel.textContent = 'Vol';
+
+    const volumeSlider = document.createElement('input');
+    volumeSlider.type = 'range';
+    volumeSlider.min = '0';
+    volumeSlider.max = '1';
+    volumeSlider.step = '0.01';
+    volumeSlider.value = track.volume;
+    volumeSlider.addEventListener('input', (e) => {
+      track.volume = parseFloat(e.target.value);
+    });
+
+    volumeControl.append(volumeLabel, volumeSlider);
+
+    const panControl = document.createElement('div');
+    panControl.className = 'mixer-control';
+
+    const panLabel = document.createElement('label');
+    panLabel.textContent = 'Pan';
+
+    const panSlider = document.createElement('input');
+    panSlider.type = 'range';
+    panSlider.min = '-1';
+    panSlider.max = '1';
+    panSlider.step = '0.01';
+    panSlider.value = track.pan;
+    panSlider.addEventListener('input', (e) => {
+      track.pan = parseFloat(e.target.value);
+    });
+
+    panControl.append(panLabel, panSlider);
+
+    channel.append(name, volumeControl, panControl);
+    channel.addEventListener('click', () => selectTrack(track.id));
+    mixerChannelsEl.append(channel);
+  });
 }
 
 function createTrack(name) {
@@ -83,7 +136,9 @@ function createTrack(name) {
     instrumentType: 'Keyboard',
     pitch: 'C4',
     range: '2 octaves',
-    audioClipId: null,
+    volume: 1.0,
+    pan: 0,
+    clips: [],
   };
   tracks.push(track);
   selectedTrackId = track.id;
@@ -215,13 +270,195 @@ function renderTrackGrid() {
 
     for (let i = 0; i < 16; i += 1) {
       const step = document.createElement('div');
-      step.className = 'track-step';
+      step.className = `track-step${track.steps[i] ? ' active' : ''}`;
+      step.dataset.step = i;
+      step.addEventListener('click', () => {
+        track.steps[i] = !track.steps[i];
+        step.classList.toggle('active', track.steps[i]);
+      });
       steps.append(step);
     }
 
     row.append(heading, controls, steps);
     trackGridEl.append(row);
   });
+}
+
+function renderMixerChannels() {
+  if (!mixerChannelsEl) return;
+  mixerChannelsEl.innerHTML = '';
+  tracks.forEach(track => {
+    const channel = document.createElement('div');
+    channel.className = `mixer-channel${track.id === selectedTrackId ? ' selected' : ''}`;
+    channel.dataset.trackId = track.id;
+
+    const name = document.createElement('div');
+    name.className = 'mixer-channel-name';
+    name.textContent = track.name;
+
+    const volumeControl = document.createElement('div');
+    volumeControl.className = 'mixer-control';
+
+    const volumeLabel = document.createElement('label');
+    volumeLabel.textContent = 'Vol';
+
+    const volumeSlider = document.createElement('input');
+    volumeSlider.type = 'range';
+    volumeSlider.min = '0';
+    volumeSlider.max = '1';
+    volumeSlider.step = '0.01';
+    volumeSlider.value = track.volume;
+    volumeSlider.addEventListener('input', (e) => {
+      track.volume = parseFloat(e.target.value);
+    });
+
+    volumeControl.append(volumeLabel, volumeSlider);
+
+    const panControl = document.createElement('div');
+    panControl.className = 'mixer-control';
+
+    const panLabel = document.createElement('label');
+    panLabel.textContent = 'Pan';
+
+    const panSlider = document.createElement('input');
+    panSlider.type = 'range';
+    panSlider.min = '-1';
+    panSlider.max = '1';
+    panSlider.step = '0.01';
+    panSlider.value = track.pan;
+    panSlider.addEventListener('input', (e) => {
+      track.pan = parseFloat(e.target.value);
+    });
+
+    panControl.append(panLabel, panSlider);
+
+    channel.append(name, volumeControl, panControl);
+    channel.addEventListener('click', () => selectTrack(track.id));
+    mixerChannelsEl.append(channel);
+  });
+}
+
+function updateTrackUI() {
+  renderTimeline();
+  renderMixerChannels();
+  updateInstrumentTrackOptions();
+  updateAudioLibraryUI();
+}
+
+function renderTimeline() {
+  if (!timelineContainerEl) return;
+  timelineContainerEl.innerHTML = '';
+
+  if (tracks.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'No tracks yet. Add one to get started.';
+    timelineContainerEl.append(empty);
+    return;
+  }
+
+  // Timeline header with time markers
+  const header = document.createElement('div');
+  header.className = 'timeline-header';
+  for (let i = 0; i < 16; i++) {
+    const marker = document.createElement('div');
+    marker.className = 'time-marker';
+    marker.textContent = i + 1;
+    header.append(marker);
+  }
+  timelineContainerEl.append(header);
+
+  // Track rows
+  tracks.forEach(track => {
+    const trackRow = document.createElement('div');
+    trackRow.className = `timeline-track-row${track.id === selectedTrackId ? ' selected' : ''}`;
+    trackRow.dataset.trackId = track.id;
+
+    const trackName = document.createElement('div');
+    trackName.className = 'timeline-track-name';
+    trackName.textContent = track.name;
+    trackName.addEventListener('click', () => selectTrack(track.id));
+
+    const trackLane = document.createElement('div');
+    trackLane.className = 'timeline-track-lane';
+    trackLane.dataset.trackId = track.id;
+
+    // Add drop event for placing clips
+    trackLane.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+    trackLane.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const fileId = e.dataTransfer.getData('text/plain');
+      if (fileId) {
+        const rect = trackLane.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const step = Math.floor(x / (rect.width / 16));
+        placeClipOnTrack(track.id, fileId, step);
+      }
+    });
+
+    // Render existing clips
+    track.clips.forEach((clip, index) => {
+      const clipEl = document.createElement('div');
+      clipEl.className = 'timeline-clip';
+      clipEl.style.left = `${(clip.startTime / 16) * 100}%`;
+      clipEl.style.width = `${(clip.duration / 16) * 100}%`;
+      clipEl.textContent = audioFiles.find(f => f.id === clip.fileId)?.name || 'Clip';
+      clipEl.dataset.clipIndex = index;
+      clipEl.dataset.trackId = track.id;
+
+      // Add resize handle
+      const resizeHandle = document.createElement('div');
+      resizeHandle.className = 'clip-resize-handle';
+      clipEl.append(resizeHandle);
+
+      // Add resize functionality
+      let isResizing = false;
+      let startX = 0;
+      let startWidth = 0;
+
+      resizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        isResizing = true;
+        startX = e.clientX;
+        startWidth = clipEl.offsetWidth;
+        document.addEventListener('mousemove', resize);
+        document.addEventListener('mouseup', stopResize);
+      });
+
+      function resize(e) {
+        if (!isResizing) return;
+        const deltaX = e.clientX - startX;
+        const newWidth = Math.max(20, startWidth + deltaX); // Min width
+        const laneWidth = trackLane.offsetWidth;
+        const newDuration = Math.round((newWidth / laneWidth) * 16);
+        clip.duration = Math.max(1, newDuration);
+        clipEl.style.width = `${(clip.duration / 16) * 100}%`;
+      }
+
+      function stopResize() {
+        isResizing = false;
+        document.removeEventListener('mousemove', resize);
+        document.removeEventListener('mouseup', stopResize);
+        updateTrackUI(); // To refresh if needed
+      }
+
+      trackLane.append(clipEl);
+    });
+
+    trackRow.append(trackName, trackLane);
+    timelineContainerEl.append(trackRow);
+  });
+}
+
+function placeClipOnTrack(trackId, fileId, startStep) {
+  const track = tracks.find(t => t.id === trackId);
+  if (!track) return;
+  // Default duration = 4 steps
+  const duration = 4;
+  track.clips.push({ fileId, startTime: startStep, duration });
+  updateTrackUI();
 }
 
 function updateInstrumentTrackOptions() {
@@ -251,6 +488,10 @@ function updateAudioLibraryUI() {
   audioFiles.forEach((file) => {
     const item = document.createElement('div');
     item.className = 'audio-file-item';
+    item.draggable = true;
+    item.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('text/plain', file.id);
+    });
 
     const title = document.createElement('span');
     title.textContent = file.name;
@@ -268,20 +509,7 @@ function updateAudioLibraryUI() {
       previewFile(file.id);
     });
 
-    const assignButton = document.createElement('button');
-    assignButton.type = 'button';
-    assignButton.className = 'panel-button small';
-    assignButton.textContent = 'Assign';
-    assignButton.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (!selectedTrackId) {
-        alert('Select a track before assigning a clip.');
-        return;
-      }
-      assignClipToTrack(selectedTrackId, file.id);
-    });
-
-    controls.append(playButton, assignButton);
+    controls.append(playButton);
     item.append(title, controls);
     audioLibraryEl.append(item);
   });
@@ -357,6 +585,8 @@ function playAllClips() {
   });
 }
 
+let lastStep = -1;
+
 function handlePlayback(now) {
   if (!isPlaying) return;
 
@@ -366,6 +596,23 @@ function handlePlayback(now) {
 
   const intervalMs = (60 / tempo / 4) * 1000;
   currentStep = Math.floor(elapsedMs / intervalMs) % 16;
+
+  if (currentStep !== lastStep) {
+    // New step, play clips that start at this step
+    tracks.forEach(track => {
+      track.clips.forEach(clip => {
+        if (clip.startTime === currentStep) {
+          const file = audioFiles.find(f => f.id === clip.fileId);
+          if (file && file.audio) {
+            const audio = new Audio(file.url);
+            audio.volume = track.volume;
+            audio.play().catch(() => {});
+          }
+        }
+      });
+    });
+    lastStep = currentStep;
+  }
 
   highlightStep(currentStep);
   updateTimeDisplay();
@@ -421,6 +668,82 @@ function syncInstrumentForm() {
   instrumentTypeSelect.value = track.instrumentType || 'Keyboard';
   pitchInput.value = track.pitch;
   rangeInput.value = track.range;
+
+  updateInstrumentUI();
+}
+
+function updateInstrumentUI() {
+  const isKeyboard = instrumentTypeSelect.value === 'Keyboard';
+  const pitchField = pitchInput.closest('.modal-field');
+  const rangeField = rangeInput.closest('.modal-field');
+
+  if (isKeyboard) {
+    pitchField.classList.add('hidden');
+    rangeField.classList.add('hidden');
+    keyboardContainerEl.classList.remove('hidden');
+    renderKeyboard();
+  } else {
+    pitchField.classList.remove('hidden');
+    rangeField.classList.remove('hidden');
+    keyboardContainerEl.classList.add('hidden');
+  }
+}
+
+function renderKeyboard() {
+  const trackId = Number(instrumentTrackSelect.value);
+  const track = tracks.find((item) => item.id === trackId);
+  if (!track) return;
+
+  keyboardContainerEl.innerHTML = '';
+
+  // Parse range, default to 2 octaves
+  const rangeMatch = track.range.match(/(\d+)/);
+  const octaves = rangeMatch ? parseInt(rangeMatch[1]) : 2;
+
+  // Start from C4, for simplicity
+  const startNote = 60; // C4 MIDI note
+  const endNote = startNote + octaves * 12;
+
+  const keyboard = document.createElement('div');
+  keyboard.className = 'keyboard';
+
+  const whiteKeys = [];
+  const blackKeys = [];
+
+  for (let note = startNote; note < endNote; note++) {
+    const noteName = getNoteName(note);
+    const isBlack = noteName.includes('#');
+
+    const key = document.createElement('div');
+    key.className = `key ${isBlack ? 'black' : 'white'}${noteName === track.pitch ? ' active' : ''}`;
+    key.dataset.note = note;
+    key.textContent = noteName.replace('#', '♯');
+
+    key.addEventListener('click', () => {
+      track.pitch = noteName;
+      renderKeyboard(); // Re-render to highlight
+    });
+
+    if (isBlack) {
+      blackKeys.push(key);
+    } else {
+      whiteKeys.push(key);
+    }
+  }
+
+  // Append white keys first
+  whiteKeys.forEach(key => keyboard.append(key));
+  // Then black keys
+  blackKeys.forEach(key => keyboard.append(key));
+
+  keyboardContainerEl.append(keyboard);
+}
+
+function getNoteName(midiNote) {
+  const notes = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const octave = Math.floor(midiNote / 12) - 1;
+  const noteIndex = midiNote % 12;
+  return notes[noteIndex] + octave;
 }
 
 function saveInstrumentSettings() {
@@ -514,6 +837,10 @@ if (instrumentCloseButton) {
 
 if (instrumentTrackSelect) {
   instrumentTrackSelect.addEventListener('change', syncInstrumentForm);
+}
+
+if (instrumentTypeSelect) {
+  instrumentTypeSelect.addEventListener('change', updateInstrumentUI);
 }
 
 if (instrumentSaveButton) {

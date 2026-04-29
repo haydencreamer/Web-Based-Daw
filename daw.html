@@ -29,33 +29,30 @@
   </section>
 
   <main class="daw-layout">
-    <aside class="tracklist-panel">
-      <h2>Tracks</h2>
-      <div id="track-list" class="track-list"></div>
-      <button id="add-track-button" class="panel-button">Add Track</button>
-    </aside>
-
-    <section class="editor-panel">
-      <div class="panel-header">Arrangement</div>
-      <div class="panel-body editor-grid">
-        <div class="grid-labels">
-          <span>1</span><span>2</span><span>3</span><span>4</span>
-        </div>
-        <div id="track-grid" class="grid-content">
-          <div class="empty-state">Add tracks and audio clips to begin.</div>
-        </div>
-      </div>
-    </section>
-
     <aside class="mixer-panel">
       <div class="mixer-panel-header">
         <h2>Mixer</h2>
         <button id="instruments-button" class="panel-button small">Instruments</button>
       </div>
-      <div class="mixer-channel">Channel 1</div>
-      <div class="mixer-channel">Channel 2</div>
-      <div class="mixer-channel">Channel 3</div>
-      <button class="panel-button">Open Mixer</button>
+      <div id="mixer-channels" class="mixer-channels">
+        <!-- Channels will be rendered here -->
+      </div>
+    </aside>
+
+    <section class="editor-panel">
+      <div class="panel-header">
+        Arrangement
+        <button id="add-track-button" class="panel-button small">Add Track</button>
+      </div>
+      <div class="panel-body editor-timeline">
+        <div id="timeline-container" class="timeline-container">
+          <!-- Timeline will be rendered here -->
+        </div>
+      </div>
+    </section>
+
+    <aside class="audio-library-panel">
+      <h2>Audio Library</h2>
       <button id="insert-file-button" class="panel-button">Insert Files</button>
       <input id="file-input" type="file" accept="audio/*" multiple hidden />
       <div id="drop-area" class="drop-area">Drag and drop audio files here</div>
@@ -87,6 +84,9 @@
       <div class="modal-field">
         <label for="range-input">Range</label>
         <input id="range-input" type="text" value="2 octaves" />
+      </div>
+      <div id="keyboard-container" class="keyboard-container hidden">
+        <!-- Keyboard will be rendered here -->
       </div>
       <div class="modal-actions">
         <button id="instrument-save-button" class="panel-button">Save</button>
