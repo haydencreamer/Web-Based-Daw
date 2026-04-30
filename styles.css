@@ -231,9 +231,9 @@ button:active {
 .track-remove-btn {
   width: 30px;
   height: 30px;
-  border: 1px solid rgba(157, 189, 37, 0.25);
-  background: rgba(255, 255, 255, 0.08);
-  color: #f5f0c7;
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  background: rgba(139, 92, 246, 0.08);
+  color: #ffffff;
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
@@ -556,6 +556,8 @@ button:active {
   flex-direction: column;
   gap: 0.75rem;
   min-height: 100%;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .timeline-header {
@@ -569,7 +571,7 @@ button:active {
 .time-marker {
   text-align: center;
   font-size: 0.8rem;
-  color: #cbd18d;
+  color: #a78bfa;
 }
 
 .timeline-track-row {
@@ -590,8 +592,6 @@ button:active {
 }
 
 .timeline-track-name {
-  width: 110px;
-  min-width: 110px;
   color: #ffffff;
   font-weight: 600;
   cursor: pointer;
@@ -623,6 +623,13 @@ button:active {
   overflow: hidden;
   z-index: 5;
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.timeline-clip.selected {
+  border-color: #f5f0c7;
+  box-shadow: 0 4px 16px rgba(245, 240, 199, 0.5);
 }
 
 .clip-resize-handle {
@@ -630,8 +637,19 @@ button:active {
   height: 100%;
   background: rgba(255, 255, 255, 0.4);
   cursor: ew-resize;
-  border-radius: 0 8px 8px 0;
   transition: background 0.15s ease;
+}
+
+.clip-resize-handle.start {
+  position: absolute;
+  left: 0;
+  border-radius: 8px 0 0 8px;
+}
+
+.clip-resize-handle.end {
+  position: absolute;
+  right: 0;
+  border-radius: 0 8px 8px 0;
 }
 
 .clip-resize-handle:hover {
@@ -689,9 +707,24 @@ button:active {
 }
 
 .mixer-body {
+  overflow: hidden;
+}
+
+.mixer-channels {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(1, 1fr);
   gap: 0.75rem;
+  height: 100%;
+  width: 100%;
+  grid-auto-rows: 1fr;
+}
+
+.mixer-channels.scrollable {
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 200px;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
 }
 
 .mixer-channel {
@@ -702,9 +735,9 @@ button:active {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
-  min-height: 220px;
   border: 1px solid rgba(139, 92, 246, 0.12);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-height: 100px;
 }
 
 .mixer-channel.selected {
@@ -853,7 +886,7 @@ button:active {
   justify-content: center;
   font-size: 0.7rem;
   font-weight: bold;
-  color: #071003;
+  color: #11172a;
   cursor: pointer;
   transition: background-color 0.15s ease;
   user-select: none;

@@ -39,6 +39,7 @@ let currentStep = 0;
 let elapsedMs = 0;
 let lastTickTime = 0;
 let selectedTrackId = null;
+let selectedClip = null; // Track selected clip for deletion
 let nextTrackId = 1;
 const tracks = [];
 const audioFiles = [];
@@ -366,6 +367,13 @@ function renderMixerChannels() {
     channel.addEventListener('click', () => selectTrack(track.id));
     mixerChannelsEl.append(channel);
   });
+
+  // Apply scrolling class only if more than 3 tracks
+  if (tracks.length > 3) {
+    mixerChannelsEl.classList.add('scrollable');
+  } else {
+    mixerChannelsEl.classList.remove('scrollable');
+  }
 }
 
 function updateTrackUI() {
@@ -405,10 +413,32 @@ function renderTimeline() {
     trackRow.className = `timeline-track-row${track.id === selectedTrackId ? ' selected' : ''}`;
     trackRow.dataset.trackId = track.id;
 
+    const trackNameContainer = document.createElement('div');
+    trackNameContainer.style.display = 'flex';
+    trackNameContainer.style.alignItems = 'center';
+    trackNameContainer.style.gap = '0.5rem';
+    trackNameContainer.style.width = '110px';
+    trackNameContainer.style.minWidth = '110px';
+
     const trackName = document.createElement('div');
     trackName.className = 'timeline-track-name';
     trackName.textContent = track.name;
+    trackName.style.flex = '1';
     trackName.addEventListener('click', () => selectTrack(track.id));
+
+    const removeTrackBtn = document.createElement('button');
+    removeTrackBtn.className = 'track-remove-btn';
+    removeTrackBtn.textContent = '×';
+    removeTrackBtn.style.width = '24px';
+    removeTrackBtn.style.height = '24px';
+    removeTrackBtn.style.padding = '0';
+    removeTrackBtn.style.fontSize = '1.2rem';
+    removeTrackBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      removeTrack(track.id);
+    });
+
+    trackNameContainer.append(trackName, removeTrackBtn);
 
     const trackLane = document.createElement('div');
     trackLane.className = 'timeline-track-lane';
@@ -438,48 +468,141 @@ function renderTimeline() {
       clipEl.textContent = audioFiles.find(f => f.id === clip.fileId)?.name || 'Clip';
       clipEl.dataset.clipIndex = index;
       clipEl.dataset.trackId = track.id;
+      clipEl.draggable = true;
 
-      // Add resize handle
-      const resizeHandle = document.createElement('div');
-      resizeHandle.className = 'clip-resize-handle';
-      clipEl.append(resizeHandle);
+      // Add start resize handle
+      const startResizeHandle = document.createElement('div');
+      startResizeHandle.className = 'clip-resize-handle start';
+      clipEl.append(startResizeHandle);
 
-      // Add resize functionality
-      let isResizing = false;
-      let startX = 0;
-      let startWidth = 0;
+      // Add end resize handle
+      const endResizeHandle = document.createElement('div');
+      endResizeHandle.className = 'clip-resize-handle end';
+      clipEl.append(endResizeHandle);
 
-      resizeHandle.addEventListener('mousedown', (e) => {
-        e.preventDefault();
-        isResizing = true;
-        startX = e.clientX;
-        startWidth = clipEl.offsetWidth;
-        document.addEventListener('mousemove', resize);
-        document.addEventListener('mouseup', stopResize);
+      // Add move functionality
+      let isDragging = false;
+      let dragStartX = 0;
+      let initialLeft = 0;
+
+      clipEl.addEventListener('dragstart', (e) => {
+        isDragging = true;
+        dragStartX = e.clientX;
+        initialLeft = clipEl.offsetLeft;
+        e.dataTransfer.effectAllowed = 'move';
       });
 
-      function resize(e) {
-        if (!isResizing) return;
-        const deltaX = e.clientX - startX;
-        const newWidth = Math.max(20, startWidth + deltaX); // Min width
+      clipEl.addEventListener('dragend', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        const deltaX = e.clientX - dragStartX;
         const laneWidth = trackLane.offsetWidth;
-        const newDuration = Math.round((newWidth / laneWidth) * 16);
-        clip.duration = Math.max(1, newDuration);
+        const stepSize = laneWidth / 16;
+        const stepDelta = Math.round(deltaX / stepSize);
+        clip.startTime = Math.max(0, clip.startTime + stepDelta);
+        updateTrackUI();
+      });
+
+      // Add click to select clip
+      clipEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedClip) {
+          selectedClip.element.classList.remove('selected');
+        }
+        selectedClip = { element: clipEl, clip: clip, track: track, index: index };
+        clipEl.classList.add('selected');
+      });
+
+      // Add start resize functionality
+      let isResizingStart = false;
+      let startResizeStartX = 0;
+      let startResizeInitialLeft = 0;
+      let startResizeInitialWidth = 0;
+
+      startResizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizingStart = true;
+        startResizeStartX = e.clientX;
+        startResizeInitialLeft = clipEl.offsetLeft;
+        startResizeInitialWidth = clipEl.offsetWidth;
+        document.addEventListener('mousemove', resizeStart);
+        document.addEventListener('mouseup', stopResizeStart);
+      });
+
+      function resizeStart(e) {
+        if (!isResizingStart) return;
+        const deltaX = e.clientX - startResizeStartX;
+        const newLeft = startResizeInitialLeft + deltaX;
+        const newWidth = startResizeInitialWidth - deltaX;
+        if (newWidth > 20) { // Min width
+          const laneWidth = trackLane.offsetWidth;
+          const newStartTime = Math.max(0, Math.round((newLeft / laneWidth) * 16));
+          const newDuration = Math.max(1, Math.round((newWidth / laneWidth) * 16));
+          clip.startTime = newStartTime;
+          clip.duration = newDuration;
+          clipEl.style.left = `${(clip.startTime / 16) * 100}%`;
+          clipEl.style.width = `${(clip.duration / 16) * 100}%`;
+        }
+      }
+
+      function stopResizeStart() {
+        isResizingStart = false;
+        document.removeEventListener('mousemove', resizeStart);
+        document.removeEventListener('mouseup', stopResizeStart);
+        updateTrackUI();
+      }
+
+      // Add end resize functionality
+      let isResizingEnd = false;
+      let endResizeStartX = 0;
+      let endResizeInitialWidth = 0;
+
+      endResizeHandle.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        isResizingEnd = true;
+        endResizeStartX = e.clientX;
+        endResizeInitialWidth = clipEl.offsetWidth;
+        document.addEventListener('mousemove', resizeEnd);
+        document.addEventListener('mouseup', stopResizeEnd);
+      });
+
+      function resizeEnd(e) {
+        if (!isResizingEnd) return;
+        const deltaX = e.clientX - endResizeStartX;
+        const newWidth = Math.max(20, endResizeInitialWidth + deltaX);
+        const laneWidth = trackLane.offsetWidth;
+        const newDuration = Math.max(1, Math.round((newWidth / laneWidth) * 16));
+        clip.duration = newDuration;
         clipEl.style.width = `${(clip.duration / 16) * 100}%`;
       }
 
-      function stopResize() {
-        isResizing = false;
-        document.removeEventListener('mousemove', resize);
-        document.removeEventListener('mouseup', stopResize);
-        updateTrackUI(); // To refresh if needed
+      function stopResizeEnd() {
+        isResizingEnd = false;
+        document.removeEventListener('mousemove', resizeEnd);
+        document.removeEventListener('mouseup', stopResizeEnd);
+        updateTrackUI();
       }
 
       trackLane.append(clipEl);
     });
 
-    trackRow.append(trackName, trackLane);
+    trackRow.append(trackNameContainer, trackLane);
     timelineContainerEl.append(trackRow);
+  });
+
+  // Add keydown listener for backspace to delete selected clip
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && selectedClip) {
+      e.preventDefault();
+      const trackIndex = selectedClip.track.clips.indexOf(selectedClip.clip);
+      if (trackIndex > -1) {
+        selectedClip.track.clips.splice(trackIndex, 1);
+        selectedClip = null;
+        updateTrackUI();
+      }
+    }
   });
 }
 
@@ -727,11 +850,32 @@ function previewFile(fileId) {
   });
 }
 
-function stopAllClips() {
-  audioFiles.forEach((file) => {
-    file.audio.pause();
-    file.audio.currentTime = 0;
-  });
+function playNote(note, volume) {
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  
+  oscillator.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  
+  const noteFreq = getNoteFrequency(note);
+  oscillator.frequency.setValueAtTime(noteFreq, audioContext.currentTime);
+  oscillator.type = 'sine';
+  
+  gainNode.gain.setValueAtTime(volume * 0.1, audioContext.currentTime);
+  gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+  
+  oscillator.start(audioContext.currentTime);
+  oscillator.stop(audioContext.currentTime + 0.5);
+}
+
+function getNoteFrequency(note) {
+  const noteMap = {
+    'C2': 65.41, 'C#2': 69.30, 'D2': 73.42, 'D#2': 77.78, 'E2': 82.41, 'F2': 87.31, 'F#2': 92.50, 'G2': 98.00, 'G#2': 103.83, 'A2': 110.00, 'A#2': 116.54, 'B2': 123.47,
+    'C3': 130.81, 'C#3': 138.59, 'D3': 146.83, 'D#3': 155.56, 'E3': 164.81, 'F3': 174.61, 'F#3': 185.00, 'G3': 196.00, 'G#3': 207.65, 'A3': 220.00, 'A#3': 233.08, 'B3': 246.94,
+    'C4': 261.63, 'C#4': 277.18, 'D4': 293.66, 'D#4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'G4': 392.00, 'G#4': 415.30, 'A4': 440.00, 'A#4': 466.16, 'B4': 493.88,
+  };
+  return noteMap[note] || 440;
 }
 
 function pauseAllClips() {
@@ -761,8 +905,14 @@ function handlePlayback(now) {
   currentStep = Math.floor(elapsedMs / intervalMs) % 16;
 
   if (currentStep !== lastStep) {
+    // Check if any track is soloed
+    const hasSolo = tracks.some(track => track.solo);
+    
     // New step, play clips that start at this step
     tracks.forEach(track => {
+      if (hasSolo && !track.solo) return; // Skip if solo active and this track not solo
+      if (track.muted) return; // Skip muted tracks
+      
       track.clips.forEach(clip => {
         if (clip.startTime === currentStep) {
           const file = audioFiles.find(f => f.id === clip.fileId);
@@ -771,6 +921,14 @@ function handlePlayback(now) {
             audio.volume = track.volume;
             audio.play().catch(() => {});
           }
+        }
+      });
+      
+      // Play piano notes
+      track.notes.forEach(note => {
+        if (note.step === currentStep) {
+          // Simple beep for note
+          playNote(note.note, track.volume);
         }
       });
     });
