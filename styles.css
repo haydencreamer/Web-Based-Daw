@@ -557,12 +557,17 @@ button:active {
   gap: 0.75rem;
   min-height: 100%;
   max-height: 300px;
-  overflow-y: auto;
+  overflow: auto;
+}
+
+.timeline-scroll {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
 }
 
 .timeline-header {
   display: grid;
-  grid-template-columns: repeat(16, 1fr);
   gap: 0;
   padding-bottom: 0.5rem;
   margin-bottom: 0.5rem;
@@ -707,24 +712,27 @@ button:active {
 }
 
 .mixer-body {
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 .mixer-channels {
   display: grid;
   grid-template-columns: repeat(1, 1fr);
   gap: 0.75rem;
-  height: 100%;
   width: 100%;
-  grid-auto-rows: 1fr;
+  flex: 1;
+  min-height: 0;
+  grid-auto-rows: minmax(180px, auto);
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .mixer-channels.scrollable {
-  grid-template-columns: repeat(2, 1fr);
-  grid-auto-rows: 200px;
-  height: 100%;
-  width: 100%;
-  overflow-y: auto;
+  grid-template-columns: repeat(1, 1fr);
+  grid-auto-rows: minmax(180px, auto);
 }
 
 .mixer-channel {

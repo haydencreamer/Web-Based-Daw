@@ -44,6 +44,8 @@ let nextTrackId = 1;
 const tracks = [];
 const audioFiles = [];
 const previewAudioElements = {};
+const TIMELINE_STEPS = 32;
+const TIMELINE_STEP_WIDTH = 72;
 const sampleLibrary = [
   { id: 'sample-808-kick', name: '808 Kick', url: 'samples/808-kick.wav' },
   { id: 'sample-808-snare', name: '808 Snare', url: 'samples/808-snare.wav' },
@@ -78,7 +80,7 @@ function highlightStep(stepIndex) {
   lanes.forEach(lane => {
     const playhead = document.createElement('div');
     playhead.className = 'playhead';
-    playhead.style.left = `${(stepIndex / 16) * 100}%`;
+    playhead.style.left = `${(stepIndex / TIMELINE_STEPS) * 100}%`;
     lane.append(playhead);
   });
 }
@@ -396,16 +398,21 @@ function renderTimeline() {
     return;
   }
 
+  const scrollWrapper = document.createElement('div');
+  scrollWrapper.className = 'timeline-scroll';
+
   // Timeline header with time markers
   const header = document.createElement('div');
   header.className = 'timeline-header';
-  for (let i = 0; i < 16; i++) {
+  header.style.minWidth = `${TIMELINE_STEPS * TIMELINE_STEP_WIDTH}px`;
+  header.style.gridTemplateColumns = `repeat(${TIMELINE_STEPS}, 1fr)`;
+  for (let i = 0; i < TIMELINE_STEPS; i++) {
     const marker = document.createElement('div');
     marker.className = 'time-marker';
     marker.textContent = i + 1;
     header.append(marker);
   }
-  timelineContainerEl.append(header);
+  scrollWrapper.append(header);
 
   // Track rows
   tracks.forEach(track => {
@@ -443,6 +450,7 @@ function renderTimeline() {
     const trackLane = document.createElement('div');
     trackLane.className = 'timeline-track-lane';
     trackLane.dataset.trackId = track.id;
+    trackLane.style.minWidth = `${TIMELINE_STEPS * TIMELINE_STEP_WIDTH}px`;
 
     // Add drop event for placing clips
     trackLane.addEventListener('dragover', (e) => {
@@ -454,7 +462,7 @@ function renderTimeline() {
       if (fileId) {
         const rect = trackLane.getBoundingClientRect();
         const x = e.clientX - rect.left;
-        const step = Math.floor(x / (rect.width / 16));
+        const step = Math.floor(x / (rect.width / TIMELINE_STEPS));
         placeClipOnTrack(track.id, fileId, step);
       }
     });
@@ -463,8 +471,8 @@ function renderTimeline() {
     track.clips.forEach((clip, index) => {
       const clipEl = document.createElement('div');
       clipEl.className = 'timeline-clip';
-      clipEl.style.left = `${(clip.startTime / 16) * 100}%`;
-      clipEl.style.width = `${(clip.duration / 16) * 100}%`;
+      clipEl.style.left = `${(clip.startTime / TIMELINE_STEPS) * 100}%`;
+      clipEl.style.width = `${(clip.duration / TIMELINE_STEPS) * 100}%`;
       clipEl.textContent = audioFiles.find(f => f.id === clip.fileId)?.name || 'Clip';
       clipEl.dataset.clipIndex = index;
       clipEl.dataset.trackId = track.id;
@@ -497,7 +505,7 @@ function renderTimeline() {
         isDragging = false;
         const deltaX = e.clientX - dragStartX;
         const laneWidth = trackLane.offsetWidth;
-        const stepSize = laneWidth / 16;
+        const stepSize = laneWidth / TIMELINE_STEPS;
         const stepDelta = Math.round(deltaX / stepSize);
         clip.startTime = Math.max(0, clip.startTime + stepDelta);
         updateTrackUI();
@@ -537,12 +545,12 @@ function renderTimeline() {
         const newWidth = startResizeInitialWidth - deltaX;
         if (newWidth > 20) { // Min width
           const laneWidth = trackLane.offsetWidth;
-          const newStartTime = Math.max(0, Math.round((newLeft / laneWidth) * 16));
-          const newDuration = Math.max(1, Math.round((newWidth / laneWidth) * 16));
+          const newStartTime = Math.max(0, Math.round((newLeft / laneWidth) * TIMELINE_STEPS));
+          const newDuration = Math.max(1, Math.round((newWidth / laneWidth) * TIMELINE_STEPS));
           clip.startTime = newStartTime;
           clip.duration = newDuration;
-          clipEl.style.left = `${(clip.startTime / 16) * 100}%`;
-          clipEl.style.width = `${(clip.duration / 16) * 100}%`;
+          clipEl.style.left = `${(clip.startTime / TIMELINE_STEPS) * 100}%`;
+          clipEl.style.width = `${(clip.duration / TIMELINE_STEPS) * 100}%`;
         }
       }
 
@@ -573,9 +581,9 @@ function renderTimeline() {
         const deltaX = e.clientX - endResizeStartX;
         const newWidth = Math.max(20, endResizeInitialWidth + deltaX);
         const laneWidth = trackLane.offsetWidth;
-        const newDuration = Math.max(1, Math.round((newWidth / laneWidth) * 16));
+        const newDuration = Math.max(1, Math.round((newWidth / laneWidth) * TIMELINE_STEPS));
         clip.duration = newDuration;
-        clipEl.style.width = `${(clip.duration / 16) * 100}%`;
+        clipEl.style.width = `${(clip.duration / TIMELINE_STEPS) * 100}%`;
       }
 
       function stopResizeEnd() {
@@ -589,8 +597,10 @@ function renderTimeline() {
     });
 
     trackRow.append(trackNameContainer, trackLane);
-    timelineContainerEl.append(trackRow);
+    scrollWrapper.append(trackRow);
   });
+
+  timelineContainerEl.append(scrollWrapper);
 
   // Add keydown listener for backspace to delete selected clip
   document.addEventListener('keydown', (e) => {
@@ -663,9 +673,9 @@ function renderPianoRoll() {
 function placeClipOnTrack(trackId, fileId, startStep) {
   const track = tracks.find(t => t.id === trackId);
   if (!track) return;
-  // Default duration = 4 steps
-  const duration = 4;
-  track.clips.push({ fileId, startTime: startStep, duration });
+  const safeStart = Math.min(Math.max(0, Math.floor(startStep)), TIMELINE_STEPS - 1);
+  const duration = Math.min(4, TIMELINE_STEPS - safeStart);
+  track.clips.push({ fileId, startTime: safeStart, duration });
   updateTrackUI();
 }
 
@@ -902,7 +912,7 @@ function handlePlayback(now) {
   lastTickTime = now;
 
   const intervalMs = (60 / tempo / 4) * 1000;
-  currentStep = Math.floor(elapsedMs / intervalMs) % 16;
+  currentStep = Math.floor(elapsedMs / intervalMs) % TIMELINE_STEPS;
 
   if (currentStep !== lastStep) {
     // Check if any track is soloed
