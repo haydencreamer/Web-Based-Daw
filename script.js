@@ -46,12 +46,73 @@ const audioFiles = [];
 const previewAudioElements = {};
 const TIMELINE_STEPS = 32;
 const TIMELINE_STEP_WIDTH = 72;
-const sampleLibrary = [
-  { id: 'sample-808-kick', name: '808 Kick', url: 'samples/808-kick.wav' },
-  { id: 'sample-808-snare', name: '808 Snare', url: 'samples/808-snare.wav' },
-  { id: 'sample-808-clap', name: '808 Clap', url: 'samples/808-clap.wav' },
-  { id: 'sample-808-hihat', name: '808 Hi-Hat', url: 'samples/808-hihat.wav' },
-  { id: 'sample-808-bass', name: '808 Bass', url: 'samples/808-bass.wav' },
+const sampleGroups = [
+  {
+    id: 'group-808',
+    title: '808 Samples',
+    samples: [
+      { id: 'sample-808-kick', name: '808 Kick', url: 'samples/808-kick.wav' },
+      { id: 'sample-808-snare', name: '808 Snare', url: 'samples/808-snare.wav' },
+      { id: 'sample-808-clap', name: '808 Clap', url: 'samples/808-clap.wav' },
+      { id: 'sample-808-hihat', name: '808 Hi-Hat', url: 'samples/808-hihat.wav' },
+      { id: 'sample-808-bass', name: '808 Bass', url: 'samples/808-bass.wav' },
+    ],
+  },
+  {
+    id: 'group-free-drum',
+    title: 'Free Drum Samples',
+    samples: [
+      { id: 'sample-free-drum-kick', name: 'Drum Kick' },
+      { id: 'sample-free-drum-snare', name: 'Drum Snare' },
+      { id: 'sample-free-drum-hihat', name: 'Drum Hi-Hat' },
+      { id: 'sample-free-drum-clap', name: 'Drum Clap' },
+      { id: 'sample-free-drum-perc', name: 'Percussion Hit' },
+    ],
+  },
+  {
+    id: 'group-free-trap',
+    title: 'Free Trap Samples',
+    samples: [
+      { id: 'sample-free-trap-kick', name: 'Trap Kick' },
+      { id: 'sample-free-trap-snare', name: 'Trap Snare' },
+      { id: 'sample-free-trap-hihat', name: 'Trap Hi-Hat' },
+      { id: 'sample-free-trap-808', name: 'Trap 808' },
+      { id: 'sample-free-trap-melody', name: 'Trap Melody' },
+    ],
+  },
+  {
+    id: 'group-phonk',
+    title: 'Phonk Samples',
+    samples: [
+      { id: 'sample-phonk-kick', name: 'Phonk Kick' },
+      { id: 'sample-phonk-snare', name: 'Phonk Snare' },
+      { id: 'sample-phonk-hihat', name: 'Phonk Hi-Hat' },
+      { id: 'sample-phonk-bass', name: 'Phonk Bass' },
+      { id: 'sample-phonk-vocal', name: 'Phonk Vocal Chop' },
+    ],
+  },
+  {
+    id: 'group-free-vocal-chops',
+    title: 'Free Vocal Chops',
+    samples: [
+      { id: 'sample-vocal-chop-1', name: 'Vocal Chop 1' },
+      { id: 'sample-vocal-chop-2', name: 'Vocal Chop 2' },
+      { id: 'sample-vocal-chop-3', name: 'Vocal Chop 3' },
+      { id: 'sample-vocal-chop-4', name: 'Vocal Chop 4' },
+      { id: 'sample-vocal-chop-5', name: 'Vocal Chop 5' },
+    ],
+  },
+  {
+    id: 'group-free-rap',
+    title: 'Free Rap Samples',
+    samples: [
+      { id: 'sample-rap-verse-loop', name: 'Rap Verse Loop' },
+      { id: 'sample-rap-hook-loop', name: 'Rap Hook Loop' },
+      { id: 'sample-rap-adlib', name: 'Rap Ad-lib' },
+      { id: 'sample-rap-bass', name: 'Rap Bass' },
+      { id: 'sample-rap-drum-loop', name: 'Rap Drum Loop' },
+    ],
+  },
 ];
 
 function clampTempo(value) {
@@ -455,6 +516,7 @@ function renderTimeline() {
     // Add drop event for placing clips
     trackLane.addEventListener('dragover', (e) => {
       e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
     });
     trackLane.addEventListener('drop', (e) => {
       e.preventDefault();
@@ -696,41 +758,64 @@ function updateInstrumentTrackOptions() {
 function updateAudioLibraryUI() {
   if (!audioLibraryEl) return;
   audioLibraryEl.innerHTML = '';
-  if (audioFiles.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'empty-state';
-    empty.textContent = 'No audio files loaded yet. Use insert files or drag audio here.';
-    audioLibraryEl.append(empty);
-    return;
-  }
-  audioFiles.forEach((file) => {
-    const item = document.createElement('div');
-    item.className = 'audio-file-item';
-    item.draggable = true;
-    item.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('text/plain', file.id);
+
+  const buildGroup = (title, items, isInitiallyExpanded = false) => {
+    const groupContainer = document.createElement('div');
+    groupContainer.className = 'sample-group';
+
+    const header = document.createElement('button');
+    header.type = 'button';
+    header.className = `sample-group-toggle${isInitiallyExpanded ? ' expanded' : ''}`;
+    header.innerHTML = `<span>${title}</span><span class="arrow">▾</span>`;
+
+    const body = document.createElement('div');
+    body.className = 'sample-group-body';
+    if (!isInitiallyExpanded) body.classList.add('collapsed');
+
+    if (items.length === 0) {
+      const empty = document.createElement('div');
+      empty.className = 'sample-group-empty';
+      empty.textContent = 'No samples available in this section yet.';
+      body.append(empty);
+    } else {
+      items.forEach((file) => {
+        body.append(createLibraryItem(file));
+      });
+    }
+
+    header.addEventListener('click', () => {
+      const isOpen = !body.classList.contains('collapsed');
+      document.querySelectorAll('.sample-group-body').forEach((element) => {
+        element.classList.add('collapsed');
+      });
+      document.querySelectorAll('.sample-group-toggle').forEach((button) => {
+        button.classList.remove('expanded');
+      });
+
+      if (isOpen) {
+        body.classList.add('collapsed');
+      } else {
+        body.classList.remove('collapsed');
+        header.classList.add('expanded');
+      }
     });
 
-    const title = document.createElement('span');
-    title.textContent = file.name;
+    groupContainer.append(header, body);
+    return groupContainer;
+  };
 
-    const controls = document.createElement('div');
-    controls.className = 'audio-file-controls';
-
-    const playButton = document.createElement('button');
-    playButton.type = 'button';
-    playButton.className = 'sample-play-btn';
-    playButton.textContent = '▶';
-    playButton.title = 'Preview sample';
-    playButton.addEventListener('click', (event) => {
-      event.stopPropagation();
-      previewFile(file.id);
-    });
-
-    controls.append(playButton);
-    item.append(title, controls);
-    audioLibraryEl.append(item);
+  sampleGroups.forEach((group, index) => {
+    const files = group.samples
+      .map((sample) => audioFiles.find((item) => item.id === sample.id))
+      .filter(Boolean);
+    audioLibraryEl.append(buildGroup(group.title, files, index === 0));
   });
+
+  const importedFiles = audioFiles.filter((file) =>
+    !sampleGroups.some((group) => group.samples.some((sample) => sample.id === file.id))
+  );
+
+  audioLibraryEl.append(buildGroup('Custom Imported Audio Files', importedFiles, false));
 }
 
 function initResizablePanels() {
@@ -831,11 +916,55 @@ function loadFiles(files) {
 }
 
 function loadDefaultSamples() {
-  sampleLibrary.forEach((sample) => {
-    const audio = new Audio(sample.url);
-    audio.preload = 'metadata';
-    audioFiles.push({ id: sample.id, name: sample.name, url: sample.url, audio });
+  sampleGroups.forEach((group) => {
+    group.samples.forEach((sample) => {
+      const item = {
+        id: sample.id,
+        name: sample.name,
+        url: sample.url || '',
+        audio: null,
+        group: group.title,
+      };
+      if (sample.url) {
+        const audio = new Audio(sample.url);
+        audio.preload = 'metadata';
+        item.audio = audio;
+      }
+      audioFiles.push(item);
+    });
   });
+}
+
+function createLibraryItem(file) {
+  const item = document.createElement('div');
+  item.className = 'audio-file-item';
+  item.draggable = true;
+  item.addEventListener('dragstart', (e) => {
+    e.dataTransfer.setData('text/plain', file.id);
+    e.dataTransfer.effectAllowed = 'copyMove';
+  });
+
+  const title = document.createElement('span');
+  title.textContent = file.name;
+
+  const controls = document.createElement('div');
+  controls.className = 'audio-file-controls';
+
+  if (file.audio) {
+    const playButton = document.createElement('button');
+    playButton.type = 'button';
+    playButton.className = 'sample-play-btn';
+    playButton.textContent = '▶';
+    playButton.title = 'Preview sample';
+    playButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      previewFile(file.id);
+    });
+    controls.append(playButton);
+  }
+
+  item.append(title, controls);
+  return item;
 }
 
 function stopPreview(fileId) {

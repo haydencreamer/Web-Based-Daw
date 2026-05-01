@@ -313,10 +313,13 @@ button:active {
   background: rgba(139, 92, 246, 0.08);
   border: 1px dashed rgba(139, 92, 246, 0.45);
   border-radius: 12px;
-  padding: 1rem;
+  padding: 1.2rem;
+  min-height: 160px;
   text-align: center;
   color: #a78bfa;
   cursor: pointer;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 .drop-area.dragover {
@@ -330,7 +333,7 @@ button:active {
   display: grid;
   gap: 0.75rem;
   overflow-y: auto;
-  max-height: 200px;
+  max-height: 360px;
 }
 
 .audio-file-item {
@@ -458,7 +461,7 @@ button:active {
 
 .daw-layout {
   display: grid;
-  grid-template-columns: minmax(260px, 320px) 12px minmax(0, 1fr) 12px minmax(280px, 460px);
+  grid-template-columns: minmax(320px, 400px) 12px minmax(0, 1fr) 12px minmax(280px, 460px);
   gap: 0;
   padding: 1.5rem 1rem 2rem;
   min-height: calc(100vh - 142px);
@@ -549,6 +552,84 @@ button:active {
   display: grid;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.sample-group {
+  border: 1px solid rgba(139, 92, 246, 0.12);
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(26, 35, 50, 0.95);
+}
+
+..sample-group-toggle {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.95rem 1rem;
+  background: rgba(26, 35, 50, 0.98);
+  color: #f8fafc;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: left;
+}
+
+.sample-group .arrow {
+  transition: transform 0.2s ease;
+}
+
+.sample-group-toggle.expanded .arrow {
+  transform: rotate(0deg);
+}
+
+.sample-group-toggle:not(.expanded) .arrow {
+  transform: rotate(-90deg);
+}
+
+.sample-group-body {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem 1rem 1rem;
+}
+
+.audio-file-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: #11172a;
+  border: 1px solid rgba(139, 92, 246, 0.1);
+  cursor: grab;
+}
+
+.audio-file-item:active {
+  cursor: grabbing;
+}
+
+.sample-group-empty {
+  color: #c4b5fd;
+  padding: 0.75rem 0.75rem;
+  border-radius: 12px;
+  background: rgba(17, 23, 42, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.08);
+}
+
+.audio-file-controls {
+  display: flex;
+  gap: 0.45rem;
+}
+
+.sample-play-btn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .timeline-container {
