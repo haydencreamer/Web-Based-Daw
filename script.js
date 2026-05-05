@@ -46,96 +46,7 @@ const audioFiles = [];
 const previewAudioElements = {};
 const TIMELINE_STEPS = 32;
 const TIMELINE_STEP_WIDTH = 72;
-const sampleGroups = [
-  {
-    id: 'group-free-bass',
-    title: 'Free Bass Samples & Loops',
-    samples: [
-      { id: 'sample-bass-loop-1', name: 'Bass Loop 1', url: 'samples/sample-bass-loop-1.wav' },
-      { id: 'sample-bass-loop-2', name: 'Bass Loop 2', url: 'samples/sample-bass-loop-2.wav' },
-      { id: 'sample-sub-bass', name: 'Sub Bass', url: 'samples/sample-sub-bass.wav' },
-      { id: 'sample-wobble-bass', name: 'Wobble Bass', url: 'samples/sample-wobble-bass.wav' },
-      { id: 'sample-acid-bass', name: 'Acid Bass', url: 'samples/sample-acid-bass.wav' },
-    ],
-  },
-  {
-    id: 'group-free-drum-loops',
-    title: 'Free Drum Loops',
-    samples: [
-      { id: 'sample-drum-loop-1', name: 'Drum Loop 1', url: 'samples/sample-drum-loop-1.wav' },
-      { id: 'sample-drum-loop-2', name: 'Drum Loop 2', url: 'samples/sample-drum-loop-2.wav' },
-      { id: 'sample-beat-loop', name: 'Beat Loop', url: 'samples/sample-beat-loop.wav' },
-      { id: 'sample-groove-loop', name: 'Groove Loop', url: 'samples/sample-groove-loop.wav' },
-      { id: 'sample-fill-loop', name: 'Fill Loop', url: 'samples/sample-fill-loop.wav' },
-    ],
-  },
-  {
-    id: 'group-free-drum-samples',
-    title: 'Free Drum Samples',
-    samples: [
-      { id: 'sample-drum-kick', name: 'Drum Kick', url: 'samples/sample-drum-kick.wav' },
-      { id: 'sample-drum-snare', name: 'Drum Snare', url: 'samples/sample-drum-snare.wav' },
-      { id: 'sample-drum-hihat', name: 'Drum Hi-Hat', url: 'samples/sample-drum-hihat.wav' },
-      { id: 'sample-drum-clap', name: 'Drum Clap', url: 'samples/sample-drum-clap.wav' },
-      { id: 'sample-drum-perc', name: 'Percussion Hit', url: 'samples/sample-drum-perc.wav' },
-    ],
-  },
-  {
-    id: 'group-free-female-vocal',
-    title: 'Free Female Vocal Samples',
-    samples: [
-      { id: 'sample-vocal-ahh', name: 'Ahh Vocal', url: 'samples/sample-vocal-ahh.wav' },
-      { id: 'sample-vocal-ohh', name: 'Ohh Vocal', url: 'samples/sample-vocal-ohh.wav' },
-      { id: 'sample-vocal-melody', name: 'Vocal Melody', url: 'samples/sample-vocal-melody.wav' },
-      { id: 'sample-vocal-chop-1', name: 'Vocal Chop 1', url: 'samples/sample-vocal-chop-1.wav' },
-      { id: 'sample-vocal-chop-2', name: 'Vocal Chop 2', url: 'samples/sample-vocal-chop-2.wav' },
-    ],
-  },
-  {
-    id: 'group-free-guitar-loops',
-    title: 'Free Guitar Loops',
-    samples: [
-      { id: 'sample-guitar-loop-1', name: 'Guitar Loop 1', url: 'samples/sample-guitar-loop-1.wav' },
-      { id: 'sample-guitar-loop-2', name: 'Guitar Loop 2', url: 'samples/sample-guitar-loop-2.wav' },
-      { id: 'sample-guitar-riff', name: 'Guitar Riff', url: 'samples/sample-guitar-riff.wav' },
-      { id: 'sample-guitar-chord', name: 'Guitar Chord', url: 'samples/sample-guitar-chord.wav' },
-      { id: 'sample-guitar-solo', name: 'Guitar Solo', url: 'samples/sample-guitar-solo.wav' },
-    ],
-  },
-  {
-    id: 'group-free-rap-samples',
-    title: 'Free Rap Samples',
-    samples: [
-      { id: 'sample-rap-verse', name: 'Rap Verse', url: 'samples/sample-rap-verse.wav' },
-      { id: 'sample-rap-hook', name: 'Rap Hook', url: 'samples/sample-rap-hook.wav' },
-      { id: 'sample-rap-adlib', name: 'Rap Ad-lib', url: 'samples/sample-rap-adlib.wav' },
-      { id: 'sample-rap-bass', name: 'Rap Bass', url: 'samples/sample-rap-bass.wav' },
-      { id: 'sample-rap-drum', name: 'Rap Drum', url: 'samples/sample-rap-drum.wav' },
-    ],
-  },
-  {
-    id: 'group-free-trap-samples',
-    title: 'Free Trap Samples',
-    samples: [
-      { id: 'sample-trap-kick', name: 'Trap Kick', url: 'samples/sample-trap-kick.wav' },
-      { id: 'sample-trap-snare', name: 'Trap Snare', url: 'samples/sample-trap-snare.wav' },
-      { id: 'sample-trap-hihat', name: 'Trap Hi-Hat', url: 'samples/sample-trap-hihat.wav' },
-      { id: 'sample-trap-808', name: 'Trap 808', url: 'samples/sample-trap-808.wav' },
-      { id: 'sample-trap-melody', name: 'Trap Melody', url: 'samples/sample-trap-melody.wav' },
-    ],
-  },
-  {
-    id: 'group-free-trap-snare',
-    title: 'Free Trap Snare Samples',
-    samples: [
-      { id: 'sample-trap-snare-1', name: 'Trap Snare 1', url: 'samples/sample-trap-snare-1.wav' },
-      { id: 'sample-trap-snare-2', name: 'Trap Snare 2', url: 'samples/sample-trap-snare-2.wav' },
-      { id: 'sample-trap-snare-3', name: 'Trap Snare 3', url: 'samples/sample-trap-snare-3.wav' },
-      { id: 'sample-trap-snare-4', name: 'Trap Snare 4', url: 'samples/sample-trap-snare-4.wav' },
-      { id: 'sample-trap-snare-5', name: 'Trap Snare 5', url: 'samples/sample-trap-snare-5.wav' },
-    ],
-  },
-];
+const sampleGroups = [];
 
 function clampTempo(value) {
   return Math.min(240, Math.max(40, Number(value) || 120));
@@ -236,6 +147,7 @@ function createTrack(name) {
     notes: [],
     muted: false,
     solo: false,
+    channelHeight: 220,
   };
   tracks.push(track);
   selectedTrackId = track.id;
@@ -388,6 +300,8 @@ function renderMixerChannels() {
     const channel = document.createElement('div');
     channel.className = `mixer-channel${track.id === selectedTrackId ? ' selected' : ''}`;
     channel.dataset.trackId = track.id;
+    channel.style.height = `${track.channelHeight}px`;
+    channel.style.minHeight = '100px';
 
     const name = document.createElement('div');
     name.className = 'mixer-channel-name';
@@ -448,7 +362,34 @@ function renderMixerChannels() {
       document.addEventListener('mouseup', onMouseUp);
     });
 
-    channel.append(name, faderTrack, buttons);
+    // Create resize handle
+    const resizeHandle = document.createElement('div');
+    resizeHandle.className = 'mixer-channel-resize-handle';
+    
+    resizeHandle.addEventListener('mousedown', (event) => {
+      event.preventDefault();
+      const startY = event.clientY;
+      const startHeight = channel.offsetHeight;
+      
+      function onMouseMove(moveEvent) {
+        const delta = moveEvent.clientY - startY;
+        const newHeight = Math.max(100, startHeight + delta);
+        channel.style.height = `${newHeight}px`;
+        track.channelHeight = newHeight;
+      }
+
+      function onMouseUp() {
+        document.body.style.cursor = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.body.style.cursor = 'ns-resize';
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+    channel.append(name, faderTrack, buttons, resizeHandle);
     channel.addEventListener('click', () => selectTrack(track.id));
     mixerChannelsEl.append(channel);
   });

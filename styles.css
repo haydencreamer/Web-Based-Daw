@@ -809,14 +809,14 @@ button:active {
   width: 100%;
   flex: 1;
   min-height: 0;
-  grid-auto-rows: minmax(180px, auto);
+  grid-auto-rows: max-content;
   overflow-y: auto;
   padding-right: 0.25rem;
 }
 
 .mixer-channels.scrollable {
   grid-template-columns: repeat(1, 1fr);
-  grid-auto-rows: minmax(180px, auto);
+  grid-auto-rows: max-content;
 }
 
 .mixer-channel {
@@ -830,6 +830,9 @@ button:active {
   border: 1px solid rgba(139, 92, 246, 0.12);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   min-height: 100px;
+  position: relative;
+  resize: vertical;
+  overflow: auto;
 }
 
 .mixer-channel.selected {
@@ -891,6 +894,26 @@ button:active {
 .mixer-button:hover {
   background: rgba(139, 92, 246, 0.15);
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.15);
+}
+
+.mixer-channel-resize-handle {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.3));
+  cursor: ns-resize;
+  border-radius: 0 0 16px 16px;
+  transition: background 0.15s ease;
+}
+
+.mixer-channel-resize-handle:hover {
+  background: linear-gradient(180deg, transparent, rgba(139, 92, 246, 0.6));
+}
+
+.mixer-channel-resize-handle:active {
+  background: linear-gradient(180deg, transparent, #8b5cf6);
 }
 
 .time-marker {
