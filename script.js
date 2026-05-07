@@ -46,7 +46,179 @@ const audioFiles = [];
 const previewAudioElements = {};
 const TIMELINE_STEPS = 32;
 const TIMELINE_STEP_WIDTH = 72;
+const sampleFolders = {
+  "808": [
+    "banquet (808).wav",
+    "burn (808).wav",
+    "burrberry (808).wav",
+    "crush (808).wav",
+    "ego (808).wav",
+    "flawless (808).wav",
+    "gas (808).wav",
+    "geek (808).wav",
+    "glide (808).wav",
+    "helix (808).wav",
+    "kaboom (808).wav",
+    "livefastdieslay (808).wav",
+    "memory (808).wav",
+    "private (808).wav",
+    "render (808).wav",
+    "security (808).wav",
+    "soho 2 (808).wav",
+    "soldier (808).wav",
+    "strap (808 + 140bpm).wav",
+    "strike (808).wav",
+    "sulphur (808).wav",
+    "tone (808).wav",
+    "traction (808).wav",
+    "untitled (808).wav",
+    "weight (808).wav",
+    "witch (808).wav",
+    "zero (808).wav"
+  ],
+  "Bass": [
+    "alien (bass).wav",
+    "cant stop (bass).wav",
+    "craftsman (bass).wav",
+    "flawless (bass)(.wav",
+    "fungi (bass).wav",
+    "moog stab (bass).wav",
+    "off-white (bass).wav",
+    "punch (bass).wav",
+    "sexy (bass).wav"
+  ],
+  "Clap": [
+    "air (clap).wav",
+    "bathroom (clap).wav",
+    "cell (clap).wav",
+    "chains (clap).wav",
+    "clvr (clap).wav",
+    "escape (clap).wav",
+    "good (clap).wav",
+    "method (clap).wav",
+    "solo (clap).wav",
+    "stereo tin (clap).wav",
+    "stupid (clap).wav"
+  ],
+  "Fx": [
+    "absorb (fx).wav",
+    "banish (fx).wav",
+    "bubbles (fx).wav",
+    "cave (fx).wav",
+    "crystal (fx).wav",
+    "fresh air (fx).wav",
+    "gyyatttttt (fx).wav",
+    "switch (fx).wav",
+    "visual (fx).wav",
+    "warning (fx).wav",
+    "zap (fx).wav"
+  ],
+  "Hats": [
+    "auto (open hat).wav",
+    "basic (open hat).wav",
+    "bounce (hi hat).wav",
+    "burr (open hat).wav",
+    "cant go (hihat).wav",
+    "cheque (open hat).wav",
+    "cracked (hihat).wav",
+    "enhance (open hat).wav",
+    "excess (hihat).wav",
+    "fly (hihat).wav",
+    "forge (hihat).wav",
+    "going down (open hat).wav",
+    "ice (hihat).wav",
+    "junior (hihat).wav",
+    "nap time (hi hat).wav",
+    "needle (hihat).wav",
+    "shift (hihat).wav",
+    "static (open hat).wav",
+    "stop it (hihat).wav",
+    "wind (open hat).wav"
+  ],
+  "Kick": [
+    "canon (kick).wav",
+    "electro (kick).wav",
+    "impala (kick).wav",
+    "it (kick).wav",
+    "lowlife (kick).wav",
+    "rattle (kick).wav",
+    "rock med (kick).wav",
+    "sky (kick).wav",
+    "stomp (kick).wav"
+  ],
+  "Oneshots": [
+    "Bass - asylum.wav",
+    "Bass - crack.wav",
+    "Bass - infected.wav",
+    "Bass - ritual.wav",
+    "Bass - suspect.wav",
+    "Key - a bell fr.wav",
+    "Key - fiji.wav",
+    "Key - go to.wav",
+    "Key - joy.wav",
+    "Key - told ya.wav",
+    "Lead - hazel.wav",
+    "Lead - phonecall.wav",
+    "Lead - photocopy.wav",
+    "Lead - vision.wav",
+    "Pad - artesian.wav",
+    "Pad - buzz.wav",
+    "Pad - random.wav",
+    "Pad - two tone.wav",
+    "Pluck - deserted.wav",
+    "Pluck - fallen.wav",
+    "Pluck - imaginary.wav",
+    "Pluck - lavish.wav",
+    "Pluck - low to high 2.wav",
+    "Synth - blush.wav",
+    "Synth - eternal.wav",
+    "Synth - figure.wav",
+    "Synth - relocate.wav"
+  ],
+  "percs": [
+    "can (perc).wav",
+    "chime (perc).wav",
+    "click (perc).wav",
+    "drop (perc).wav",
+    "feel (perc).wav",
+    "glass (perc).wav",
+    "mo (perc).wav",
+    "silly (perc).wav",
+    "snap crackle pop (perc).wav",
+    "sonar (perc).wav",
+    "spin (perc).wav",
+    "tack (perc).wav",
+    "tire (perc).wav"
+  ],
+  "snare": [
+    "anguilla (snare).wav",
+    "clean (snare).wav",
+    "deep (snare).wav",
+    "document (snare).wav",
+    "door (snare).wav",
+    "line (snare).wav",
+    "mello (snare).wav",
+    "money (snare).wav",
+    "pink (snare).wav",
+    "round (snare).wav",
+    "sixth (snare).wav",
+    "tambi (snare).wav",
+    "two (snare).wav"
+  ]
+};
 const sampleGroups = [];
+function buildSampleGroups() {
+  Object.entries(sampleFolders).forEach(([title, files]) => {
+    sampleGroups.push({
+      title,
+      samples: files.map((name) => ({
+        id: getUniqueAudioId(),
+        name,
+        url: encodeURI(`./${title}/${name}`),
+      })),
+    });
+  });
+}
 
 function clampTempo(value) {
   return Math.min(240, Math.max(40, Number(value) || 120));
@@ -729,6 +901,7 @@ function updateAudioLibraryUI() {
     const header = document.createElement('button');
     header.type = 'button';
     header.className = `sample-group-toggle${isInitiallyExpanded ? ' expanded' : ''}`;
+    header.setAttribute('aria-expanded', isInitiallyExpanded ? 'true' : 'false');
     header.innerHTML = `<span>${title}</span><span class="arrow">▾</span>`;
 
     const body = document.createElement('div');
@@ -751,9 +924,11 @@ function updateAudioLibraryUI() {
       if (isOpen) {
         body.classList.add('collapsed');
         header.classList.remove('expanded');
+        header.setAttribute('aria-expanded', 'false');
       } else {
         body.classList.remove('collapsed');
         header.classList.add('expanded');
+        header.setAttribute('aria-expanded', 'true');
       }
     });
 
@@ -765,7 +940,7 @@ function updateAudioLibraryUI() {
     const files = group.samples
       .map((sample) => audioFiles.find((item) => item.id === sample.id))
       .filter(Boolean);
-    audioLibraryEl.append(buildGroup(group.title, files, true));
+    audioLibraryEl.append(buildGroup(group.title, files, false));
   });
 
   const importedFiles = audioFiles.filter((file) =>
@@ -1264,6 +1439,7 @@ if (instrumentSaveButton) {
 }
 
 initResizablePanels();
+buildSampleGroups();
 loadDefaultSamples();
 createTrack('Track 1');
 createTrack('Track 2');

@@ -559,7 +559,7 @@ button:active {
   background: rgba(26, 35, 50, 0.95);
 }
 
-..sample-group-toggle {
+.sample-group-toggle {
   width: 100%;
   display: flex;
   justify-content: space-between;
